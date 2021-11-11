@@ -1,0 +1,32 @@
+{
+  "name": "acs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "cloudinary": "^1.27.1",
+    "connect-ensure-login": "^0.1.1",
+    "connect-mongo": "^4.6.0",
+    "connect-multiparty": "^2.2.0",
+    "connect-redis": "^6.0.0",
+    "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "dotenv": "^10.0.0",
+    "express": "~4.16.1",
+    "express-session": "^1.17.2",
+    "express-validator": "^6.13.0",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "mongoose": "^6.0.12",
+    "morgan": "^1.9.1",
+    "multer": "^1.4.3",
+    "nodemon": "^2.0.15",
+    "passport": "^0.5.0",
+    "passport-local-mongoose": "^6.1.0",
+    "uuid": "^8.3.2"
+  }
+}
