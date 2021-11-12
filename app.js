@@ -8,11 +8,14 @@ const passport = require('passport')
 const expressSession = require('express-session')
 const MongoStore = require('connect-mongo')
 const cors = require('cors')
+const Staff = require('./models/staff')
+
 
 require('dotenv').config()
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const adminRouter = require('./routes/adminRoute')
 
 var app = express();
 app.use(cors())
@@ -61,8 +64,33 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// passport setup
+app.use(passport.initialize())
+app.use(passport.session())
+
+
+passport.use('staff', Staff.createStrategy())
+
+passport.serializeUser(function(user, done) {
+  var key = {
+    id: user.id,
+    type: user.userType
+  }
+  done(null, key);
+})
+
+passport.deserializeUser(function(key, done) {
+  // if(key.type === 'staff' ){
+    Staff.findById(key.id, function(err, user) {
+      done(err, user)
+    }) 
+  // }
+  
+})
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/admin', adminRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
