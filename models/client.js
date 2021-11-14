@@ -8,8 +8,8 @@ const ClientSchema = Schema({
         on: {type: Boolean},
         riskLevel: {type: String}
     },
-    clientActions: {type: Array}
+    clientActions: [{type: Object}]
 }, { timestamps: true });
 
-const Client = model('client', ClientSchema)
+const Client = mongoose.model('client', ClientSchema)
 module.exports = Client;

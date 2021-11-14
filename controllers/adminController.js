@@ -1,8 +1,10 @@
 const Staff = require('../models/staff')
+const Client = require('../models/client')
+const Action = require('../models/action')
 const passport = require('passport');
 const multer = require('multer');
 const {singleUpload} = require('../middlewares/filesMiddleware');
-
+const { uuid } = require('uuidv4');
 
 // staff registration controller
 exports.registerStaff = async (req, res, next) => {
@@ -101,4 +103,77 @@ exports.editStaff = async (req,res,next) => {
   const {username} = req.query;
   await Staff.findOneAndUpdate({username: username}, req.body)
   res.json({success: true, message: `staff with the username ${username} has been edited`})
+}
+
+
+/**** CLEINT START HERE     ****//////////////////////////////////////////////
+
+// register client
+exports.registerClient = async (req,res,next) => {
+  req.body.clientId = uuid()
+  await Client.collection.insertOne(req.body)
+  res.json({success: true, message: 'client created successfullty'});
+}
+
+// delete or remove client
+exports.removeClient = async (req,res,next) => {
+  const {clientId} = req.query;
+  await Client.findOneAndDelete({clientId})
+  res.json({success: true, message: `client with the id ${clientId} has been removed`})
+}
+
+// find all client
+exports.findAllClient = async (req,res, next) => {
+
+  const result = await Client.find({});
+  result.length > 0
+   ? res.json({success: true, message: result,})
+   : res.json({success: false, message: result,})
+}
+
+// find single client
+exports.singleClient = async (req,res, next) => {
+  const {clientId} = req.query
+
+  const result = await Client.findOne({clientId});
+  result
+   ? res.json({success: true, message: result,})
+   : res.json({success: false, message: result,})
+}
+
+
+
+/**** ACTION START HERE     ****//////////////////////////////////////////////
+
+// create an action
+exports.createAction = async (req,res,next) => {
+  req.body.actionId = uuid()
+  await Action.collection.insertOne(req.body)
+  res.json({success: true, message: 'action created successfullty'});
+}
+
+// delete or remove client
+exports.removeAction = async (req,res,next) => {
+  const {actionId} = req.query;
+  await Action.findOneAndDelete({actionId})
+  res.json({success: true, message: `action with the id ${actionId} has been removed`})
+}
+
+// find all client
+exports.findAllAction = async (req,res, next) => {
+
+  const result = await Action.find({});
+  result.length > 0
+   ? res.json({success: true, message: result,})
+   : res.json({success: false, message: result,})
+}
+
+// find single client
+exports.singleAction = async (req,res, next) => {
+  const {actionId} = req.query
+
+  const result = await Action.findOne({actionId});
+  result
+   ? res.json({success: true, message: result,})
+   : res.json({success: false, message: result,})
 }

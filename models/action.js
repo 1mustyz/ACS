@@ -6,5 +6,5 @@ const ActionSchema = Schema({
     actionName: {type: String}
 }, { timestamps: true });
 
-const Action = model('action', ActionSchema)
+const Action = mongoose.model('action', ActionSchema)
 module.exports = Action;
