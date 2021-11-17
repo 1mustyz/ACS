@@ -46,6 +46,18 @@ exports.loginStaff = (req, res, next) => {
   })(req, res, next)
 }
 
+// logout
+exports.logout = (req, res,next) => {
+
+  const {role} = req.query
+
+  if (role == "admin"){
+
+      req.logout();
+      res.json({success: true, message: "logout successfully"});
+  }
+}
+
 // find all staff
 exports.findAllStaff = async (req,res, next) => {
 

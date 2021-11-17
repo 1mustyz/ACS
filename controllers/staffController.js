@@ -24,7 +24,15 @@ exports.documentClientAction = async (req,res,next) => {
     res.json({success: true, message: "client documentation saved successfully"});
 }
 
+
+// logout
 exports.logout = (req, res,next) => {
-    req.logout();
-    res.json({success: true, message: "logout successfully"});
+
+    const {role} = req.query
+
+    if (role == "staff"){
+
+        req.logout();
+        res.json({success: true, message: "logout successfully"});
+    }
 }

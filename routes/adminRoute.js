@@ -8,13 +8,13 @@ const autth = require('../middlewares/auth')
 /** All post request *//////////////////////////////////////////////
 
 // register staff route
-router.post('/register-staff', idGenerator.staffIdGenerator, adminController.registerStaff)
+router.post('/register-staff', autth.isStaffLoggedIn(), idGenerator.staffIdGenerator, adminController.registerStaff)
 
 // create client
-router.post('/create-client', adminController.registerClient)
+router.post('/create-client', autth.isStaffLoggedIn(), adminController.registerClient)
 
 // create action
-router.post('/create-action', adminController.createAction)
+router.post('/create-action', autth.isStaffLoggedIn(), adminController.createAction)
 
 // login staff
 router.post('/login',adminController.loginStaff)
@@ -26,44 +26,44 @@ router.post('/login',adminController.loginStaff)
 router.get('/get-all-staff', autth.isStaffLoggedIn(), adminController.findAllStaff)
 
 // get single staff
-router.get('/get-single-staff', adminController.singleStaff)
+router.get('/get-single-staff', autth.isStaffLoggedIn(), adminController.singleStaff)
 
 // get all client
-router.get('/get-all-client', adminController.findAllClient)
+router.get('/get-all-client', autth.isStaffLoggedIn(), adminController.findAllClient)
 
 // get single client
-router.get('/get-single-client', adminController.singleClient)
+router.get('/get-single-client', autth.isStaffLoggedIn(), adminController.singleClient)
 
 // get all actions
-router.get('/get-all-actions', adminController.findAllAction)
+router.get('/get-all-actions', autth.isStaffLoggedIn(), adminController.findAllAction)
 
 // get single action
-router.get('/get-single-action', adminController.singleAction)
+router.get('/get-single-action', autth.isStaffLoggedIn(), adminController.singleAction)
 
 // logout user
-router.get('/logout', staffController.logout)
+router.get('/logout', adminController.logout)
 
 
 
 /** All put request *//////////////////////////////////////////////////////////
 
 // edit single staff
-router.put('/edit-single-staff', adminController.editStaff)
+router.put('/edit-single-staff', autth.isStaffLoggedIn(), adminController.editStaff)
 
 // set profile pic
-router.put('/set-profile-pic', adminController.setProfilePic);
+router.put('/set-profile-pic', autth.isStaffLoggedIn(), adminController.setProfilePic);
 
 
 
 /** All delete request *////////////////////////////////////////////////////
 
 // delete single staff
-router.delete('/delete-single-staff', adminController.removeStaff)
+router.delete('/delete-single-staff', autth.isStaffLoggedIn(), adminController.removeStaff)
 
 // delete client
-router.delete('/delete-single-client', adminController.removeClient)
+router.delete('/delete-single-client', autth.isStaffLoggedIn(), adminController.removeClient)
 
 // delete action
-router.delete('/delete-single-action', adminController.removeAction)
+router.delete('/delete-single-action', autth.isStaffLoggedIn(), adminController.removeAction)
 
 module.exports = router;
