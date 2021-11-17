@@ -23,3 +23,8 @@ exports.documentClientAction = async (req,res,next) => {
     // console.log(clientActions)
     res.json({success: true, message: "client documentation saved successfully"});
 }
+
+exports.logout = (req, res,next) => {
+    req.logout();
+    res.json({success: true, message: "logout successfully"});
+}

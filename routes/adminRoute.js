@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
 const adminController = require('../controllers/adminController')
+const staffController = require('../controllers/staffController')
 const idGenerator = require('../middlewares/idGenerator')
+const autth = require('../middlewares/auth')
 
 /** All post request *//////////////////////////////////////////////
 
@@ -21,7 +23,7 @@ router.post('/login',adminController.loginStaff)
 /** All get request *///////////////////////////////////////////////////////////////
 
 // get all staff
-router.get('/get-all-staff', adminController.findAllStaff)
+router.get('/get-all-staff', autth.isStaffLoggedIn(), adminController.findAllStaff)
 
 // get single staff
 router.get('/get-single-staff', adminController.singleStaff)
@@ -37,6 +39,9 @@ router.get('/get-all-actions', adminController.findAllAction)
 
 // get single action
 router.get('/get-single-action', adminController.singleAction)
+
+// logout user
+router.get('/logout', staffController.logout)
 
 
 
