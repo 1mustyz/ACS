@@ -40,7 +40,22 @@ exports.loginStaff = (req, res, next) => {
         res.json({ success: false, message: 'something went wrong pls try again' })
       }else {
         req.session.user = user
-        res.json({ success: true, message: 'staff login successful', user})
+
+        const newUser = {
+          _id: user._id,
+          username: user.username,
+          firstName: user.firsName,
+          lastName: user.lastName,
+          email: user.email,
+          phone: user.phone,
+          image: user.image,
+          role: user.role,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+          __v: user.__v
+        }
+        
+        res.json({ success: true, message: 'staff login successful', newUser})
       }
     })
   })(req, res, next)
@@ -49,9 +64,9 @@ exports.loginStaff = (req, res, next) => {
 // logout
 exports.logout = (req, res,next) => {
 
-  const {role} = req.query
+  console.log(req.session)
 
-  if (role == "admin"){
+  if (req.session.user.role == "admin"){
 
       req.logout();
       res.json({success: true, message: "logout successfully"});

@@ -28,9 +28,7 @@ exports.documentClientAction = async (req,res,next) => {
 // logout
 exports.logout = (req, res,next) => {
 
-    const {role} = req.query
-
-    if (role == "staff"){
+    if (req.session.user.role == "staff"){
 
         req.logout();
         res.json({success: true, message: "logout successfully"});
