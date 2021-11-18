@@ -44,7 +44,7 @@ exports.loginStaff = (req, res, next) => {
         const newUser = {
           _id: user._id,
           username: user.username,
-          firstName: user.firsName,
+          firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
           phone: user.phone,
