@@ -1,18 +1,9 @@
-const Pusher = require('pusher')
+const ClientAlert = require('../models/clientAlert')
 
-const pusher = new Pusher({
-    app_id: "1236911",
-    key: "2e43b248a65f500c42e1",
-    secret: "d420b43dabbda03f1610",
-    cluster: "mt1",
-    useTLS: true
-})
+exports.getAllAlert = async (req,res,next) => {
 
-exports.manageAlert =  (req,res,next) => {
+    const allAlert = await ClientAlert.find({})
+       
+    res.json({success:true, message: allAlert})
 
-       pusher.trigger("notifications", "alert", {
-            message: "hello tapaswi"
-          });
-
-          res.json({h:"jdjdj"})
 }

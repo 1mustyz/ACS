@@ -10,6 +10,15 @@ const MongoStore = require('connect-mongo')
 const cors = require('cors')
 const Staff = require('./models/staff')
 const LocalStrategy = require('passport-local').Strategy;
+const ClientAlert = require('./models/clientAlert')
+const Pusher = require("pusher");
+const pusher = new Pusher({
+  appId: "1236911",
+  key: "4fd41dcde3de7004fcf0",
+  secret: "6e49d89e8b2e2f2d5450",
+  cluster: "mt1",
+  useTLS: true
+});
 
 
 
@@ -49,6 +58,8 @@ mongoose.Promise = global.Promise
 mongoose.connection
   .once('open', () => {
     console.log('mongodb started')
+    
+    
     // connect the server if DB is UP
     // http.listen(PORT, () => {
     //   console.log(`server started `)
@@ -103,6 +114,31 @@ app.use('/admin', adminRouter)
 app.use('/staff', staffRouter)
 app.use('/client', clientRouter)
 
+// client 
+
+app.post('/recieve-client-notification', async (req,res)=>{
+
+ req.body.respond = false
+  
+ const newAlert = await ClientAlert.collection.insertOne(req.body)
+ if(newAlert){
+   
+   const allAlert = await ClientAlert.find({})
+   if(allAlert){
+     
+     pusher.trigger("notifications", "alert", {
+       allAlert
+      });
+    }
+
+    console.log('all Alert',allAlert)
+  }
+  console.log('new Alert',newAlert)
+
+  res.json({success: true, message: allAlert});
+  
+})
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -118,5 +154,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
 
 module.exports = app;

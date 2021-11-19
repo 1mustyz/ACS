@@ -4,10 +4,6 @@ const Schema = mongoose.Schema;
 const ClientSchema = Schema({
     clientId: { type: String, required: true},
     clientLocation: {type: Array},
-    alert: {
-        on: {type: Boolean},
-        riskLevel: {type: String}
-    },
     clientActions: [{type: Object}]
 }, { timestamps: true });
 
