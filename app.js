@@ -158,7 +158,7 @@ app.post('/voke-a-chart', async (req,res,next) => {
 
    const newChart = await Chart.collection.insertOne(req.body)
    if(newChart){
-       const allChart = await Chart.find({staffOneId,staffTwoId})
+       const allChart = await Chart.find({staffOneId,staffTwoId}).sort({time: 1}).limit(10)
        console.log(staffOneId)
        console.log(allChart)
 
