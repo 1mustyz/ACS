@@ -1,7 +1,7 @@
 //check if user is logged in && the user is not trying to access unauthorised data
 exports.isAdminLoggedIn = function () {
     return (req, res, next) => {
-      if (req.isAuthenticated() && req.user.role == "admin") {
+      if (req.isAuthenticated()) {
         return res.json({ success: true, message: 'valid admin', user: req.user })
         
       }else{

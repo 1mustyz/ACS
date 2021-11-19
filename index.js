@@ -1,13 +1,30 @@
-const Pusher = require("pusher");
 
-const pusher = new Pusher({
-    app_id = "1236911",
-    key = "2e43b248a65f500c42e1",
-    secret = "d420b43dabbda03f1610",
-    cluster = "mt1",
-    useTLS: true
+
+
+  const data = {
+    username: "ACS/ADMIN/005",
+    password: "password"
+};
+
+fetch('https://tim-acs.herokuapp.com/admin/login', {
+  method: 'POST', // or 'PUT'
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(data),
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Success:', data);
+})
+.catch((error) => {
+  console.error('Error:', error);
 });
 
-pusher.trigger("my-channel", "my-event", {
-  message: "hello world"
-});
+setTimeout(() => {
+  fetch('https://tim-acs.herokuapp.com/admin/get-all-staff')
+	.then(response => response.json())
+	.then(data => console.log(data))
+	// .catch(err => console.error(err));
+
+}, 10000);
