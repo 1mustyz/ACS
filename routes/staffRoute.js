@@ -13,6 +13,7 @@ router.put('/document-client-action', staffController.documentClientAction)
 
 
 /** All get request *//////////////////////////////////////////////////////////
+router.get('/get-all-staff', adminController.findAllStaff)
 
 // logout user
 router.get('/logout', staffController.logout)

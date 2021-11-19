@@ -158,7 +158,9 @@ app.post('/voke-a-chart', async (req,res,next) => {
 
    const newChart = await Chart.collection.insertOne(req.body)
    if(newChart){
-       const allChart = await Chart.find({staffOneId,staffTwoId}).limit(10)
+       const allChart = await Chart.find({staffOneId,staffTwoId})
+       console.log(staffOneId)
+       console.log(allChart)
 
        pusher.trigger("notifications", "vokeAChart", {
         allChart
