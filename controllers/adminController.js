@@ -5,6 +5,7 @@ const passport = require('passport');
 const multer = require('multer');
 const {singleUpload} = require('../middlewares/filesMiddleware');
 const { uuid } = require('uuidv4');
+const jwt =require('jsonwebtoken');
 
 // staff registration controller
 exports.registerStaff = async (req, res, next) => {
@@ -16,7 +17,20 @@ exports.registerStaff = async (req, res, next) => {
       //save the user to the DB
       await Staff.register(user, password, function (error, user) {
         if (error) return res.json({ success: false, error }) 
-        res.json({ success: true, user })
+        const newUser = {
+          _id: user._id,
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          phone: user.phone,
+          image: user.image,
+          role: user.role,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+          __v: user.__v
+        }
+        res.json({ success: true, newUser })
       })
     } catch (error) {
       res.json({ success: false, error })
@@ -26,6 +40,7 @@ exports.registerStaff = async (req, res, next) => {
   // staff login controller
 exports.loginStaff = (req, res, next) => {
 
+  let payLoad = {}
   // perform authentication
   passport.authenticate('staff', (error, user, info) => {
     if (error) return res.json({ success: false, error })
@@ -40,8 +55,11 @@ exports.loginStaff = (req, res, next) => {
         res.json({ success: false, message: 'something went wrong pls try again' })
       }else {
         req.session.user = user
+        payLoad.id = user.username
+        const token = jwt.sign(payLoad, 'myVerySecret');
 
         const newUser = {
+          token: token,
           _id: user._id,
           username: user.username,
           firstName: user.firstName,
@@ -60,6 +78,8 @@ exports.loginStaff = (req, res, next) => {
     })
   })(req, res, next)
 }
+
+ 
 
 // logout
 exports.logout = (req, res,next) => {

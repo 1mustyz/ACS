@@ -6,7 +6,7 @@
     password: "password"
 };
 
-fetch('https://tim-acs.herokuapp.com/admin/login', {
+fetch('http://localhost:3092/admin/login', {
   method: 'POST', // or 'PUT'
   headers: {
     'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ fetch('https://tim-acs.herokuapp.com/admin/login', {
 });
 
 setTimeout(() => {
-  fetch('https://tim-acs.herokuapp.com/admin/get-all-staff')
+  fetch('http://localhost:3092/admin/get-all-staff')
 	.then(response => response.json())
 	.then(data => console.log(data))
 	// .catch(err => console.error(err));

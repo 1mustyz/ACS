@@ -9,6 +9,8 @@ const expressSession = require('express-session')
 const MongoStore = require('connect-mongo')
 const cors = require('cors')
 const Staff = require('./models/staff')
+const LocalStrategy = require('passport-local').Strategy;
+
 
 
 require('dotenv').config()
@@ -68,6 +70,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // passport setup
 app.use(passport.initialize())
 app.use(passport.session())
+require('./config/passport.config')(passport);
 
 
 passport.use('staff', Staff.createStrategy())
@@ -75,19 +78,23 @@ passport.use('staff', Staff.createStrategy())
 passport.serializeUser(function(user, done) {
   var key = {
     id: user.id,
-    type: user.userType
+    type: user.role
   }
   done(null, key);
 })
 
 passport.deserializeUser(function(key, done) {
-  // if(key.type === 'staff' ){
+  // if(key.type === 'staff'|| key.type === 'admin' ){
     Staff.findById(key.id, function(err, user) {
       done(err, user)
     }) 
   // }
   
 })
+passport.serializeUser(Staff.serializeUser());
+passport.deserializeUser(Staff.deserializeUser());
+
+passport.use(new LocalStrategy(Staff.authenticate()));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
