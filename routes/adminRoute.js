@@ -11,7 +11,7 @@ const passport = require('passport');
 router.post('/register-staff', passport.authenticate("jwt.admin",{session:false}),idGenerator.staffIdGenerator, adminController.registerStaff)
 
 // create client
-router.post('/create-client', passport.authenticate("jwt.admin",{session:false}), adminController.registerClient)
+router.post('/create-client',  adminController.registerClient)
 
 // create action
 router.post('/create-action', passport.authenticate("jwt.admin",{session:false}), adminController.createAction)
@@ -23,13 +23,13 @@ router.post('/login', adminController.loginStaff)
 /** All get request *///////////////////////////////////////////////////////////////
 
 // get all staff
-router.get('/get-all-staff', passport.authenticate("jwt.admin",{session:false}), adminController.findAllStaff)
+router.get('/get-all-staff', adminController.findAllStaff)
 
 // get single staff
 router.get('/get-single-staff', passport.authenticate("jwt.admin",{session:false}), adminController.singleStaff)
 
 // get all client
-router.get('/get-all-client', passport.authenticate("jwt.admin",{session:false}), adminController.findAllClient)
+router.get('/get-all-client',  adminController.findAllClient)
 
 // get single client
 router.get('/get-single-client', passport.authenticate("jwt.admin",{session:false}), adminController.singleClient)
@@ -39,6 +39,10 @@ router.get('/get-all-actions', passport.authenticate("jwt.admin",{session:false}
 
 // get single action
 router.get('/get-single-action', passport.authenticate("jwt.admin",{session:false}), adminController.singleAction)
+
+// get all statistics
+router.get('/statistics', adminController.statistics)
+router.get('/statistics-aggregate', adminController.statisticsAgregate)
 
 // logout user
 router.get('/logout', adminController.logout)

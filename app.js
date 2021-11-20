@@ -121,6 +121,7 @@ app.post('/recieve-client-notification', async (req,res)=>{
 
  req.body.respond = false
  req.body.time = new Date()
+ req.body.month = new Date().getMonth() + 1
   
  const newAlert = await ClientAlert.collection.insertOne(req.body)
  let allAlerts
@@ -143,7 +144,7 @@ app.post('/recieve-client-notification', async (req,res)=>{
   
 })
 
-// chart
+// chat ///////////////////////++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 app.post('/voke-a-chart', async (req,res,next) => {
 
     const {

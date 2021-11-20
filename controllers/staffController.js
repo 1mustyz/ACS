@@ -6,11 +6,12 @@ const {uuid} = require('uuidv4')
 exports.saveClientAction = async (req,res,next) => {
     const {clientId,clientActions} = req.body
     clientActions.clientActionId = uuid()
+    clientActions.month = new Date().getMonth() + 1
 
     const client = await Client.findOneAndUpdate({clientId},{$push:{"clientActions": clientActions}})
 
     console.log(clientActions)
-    res.json({success: true, message: "client action saved successfully"});
+    res.json({success: true, message: "client action saved successfully", client});
 }
 
 // document action perform on client

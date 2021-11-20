@@ -1,6 +1,7 @@
 const Staff = require('../models/staff')
 const Client = require('../models/client')
 const Action = require('../models/action')
+const ClientAlert = require('../models/clientAlert')
 const passport = require('passport');
 const multer = require('multer');
 const {singleUpload} = require('../middlewares/filesMiddleware');
@@ -158,8 +159,8 @@ exports.editStaff = async (req,res,next) => {
 // register client
 exports.registerClient = async (req,res,next) => {
   req.body.clientId = uuid()
-  await Client.collection.insertOne(req.body)
-  res.json({success: true, message: 'client created successfullty'});
+  const client = await Client.collection.insertOne(req.body)
+  res.json({success: true, message: 'client created successfullty', client});
 }
 
 // delete or remove client
@@ -223,4 +224,67 @@ exports.singleAction = async (req,res, next) => {
   result
    ? res.json({success: true, message: result,})
    : res.json({success: false, message: result,})
+}
+
+exports.statistics = async(req,res,next) => {
+
+  // number of alert
+  const numberOfAlert = await ClientAlert.find({}).count()
+
+  //
+  const client = await Client.find({clientActions:{$exists:true}}, {clientActions: 1})
+  const numberOfStaff = await Staff.find({}).count()
+  const numberOfClient = await Client.find({}).count()
+
+  let numberOfDispatchAction = 0
+  client.forEach(client => {
+    // client.clientActions.
+    console.log(client.clientActions.length)
+    numberOfDispatchAction += client.clientActions.length
+    console.log(numberOfDispatchAction)
+
+  });
+
+  res.json({numberOfAlert,numberOfClient,numberOfStaff,numberOfDispatchAction})
+}
+
+exports.statisticsAgregate = async (req,res,next) => {
+  const numberOfAlertJan = await ClientAlert.find({month: 1}).count()
+  const numberOfDispatchActionJan = await Client.find({"clientActions.0.month": 1}).count()
+  
+  const numberOfAlertFeb = await ClientAlert.find({month: 2}).count()
+  const numberOfDispatchActionFeb = await Client.find({"clientActions.0.month": 2}).count()
+
+  const numberOfAlertMarch = await ClientAlert.find({month: 3}).count()
+  const numberOfDispatchActionMarch = await Client.find({"clientActions.0.month": 3}).count()
+
+  const numberOfAlertApril = await ClientAlert.find({month: 4}).count()
+  const numberOfDispatchActionApril = await Client.find({"clientActions.0.month": 4}).count()
+
+  const numberOfAlertMay = await ClientAlert.find({month: 5}).count()
+  const numberOfDispatchActionMay = await Client.find({"clientActions.0.month": 5}).count()
+
+  const numberOfAlertJun = await ClientAlert.find({month: 6}).count()
+  const numberOfDispatchActionJun = await Client.find({"clientActions.0.month": 6}).count()
+
+  const numberOfAlertJul = await ClientAlert.find({month: 7}).count()
+  const numberOfDispatchActionJul = await Client.find({"clientActions.0.month": 7}).count()
+
+  const numberOfAlertAug = await ClientAlert.find({month: 8}).count()
+  const numberOfDispatchActionAug = await Client.find({"clientActions.0.month": 8}).count()
+
+  const numberOfAlertSep = await ClientAlert.find({month: 9}).count()
+  const numberOfDispatchActionSep = await Client.find({"clientActions.0.month": 9}).count()
+
+  const numberOfAlertOct = await ClientAlert.find({month: 10}).count()
+  const numberOfDispatchActionOct = await Client.find({"clientActions.0.month": 10}).count()
+
+  const numberOfAlertNov = await ClientAlert.find({month: 11}).count()
+  const numberOfDispatchActionNov = await Client.find({"clientActions.0.month": 11}).count()
+
+  const numberOfAlertDec = await ClientAlert.find({month: 12}).count()
+  const numberOfDispatchActionDec = await Client.find({"clientActions.0.month": 12}).count()
+
+  res.json({numberOfAlertJan,numberOfDispatchActionJan})
+
 }

@@ -6,6 +6,7 @@ const ClientAlertSchema = Schema({
     clientLocation: {type: String},
     riskLevel: { type: String},
     time: {type: Date},
+    month: {type: Number},
     respond: { type: Boolean}
 }, { timestamps: true });
 

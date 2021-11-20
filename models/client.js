@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const ClientSchema = Schema({
     clientId: { type: String, required: true},
-    clientLocation: {type: Array},
+    clientLocation: {type: String},
     clientActions: [{type: Object}]
 }, { timestamps: true });
 

@@ -2,6 +2,8 @@ const Chart = require('../models/chart')
 
 exports.getPrevChart = async (req,res,next) => {
     const {staffOneId,staffTwoId} = req.query
-    const prevChart = await Chart.find({staffOneId,staffTwoId})
+    const prevChart = await Chart.find({
+        $or:[{staffOneId,staffTwoId},{staffOneId:staffTwoId,staffTwoId:staffOneId}]
+    }).sort({time:1}).limit(10)
     res.json({success:true, message: prevChart})
 }
