@@ -200,6 +200,14 @@ exports.createAction = async (req,res,next) => {
   res.json({success: true, message: 'action created successfullty'});
 }
 
+// edit action
+exports.editAction = async (req,res,next) => {
+  const {actionId,actionName,actionInfo} = req.body
+  await Action.updateOne({actionId},{actionName,actionInfo})
+  res.json({success: true, message: 'action edited successfullty'});
+}
+
+
 // delete or remove client
 exports.removeAction = async (req,res,next) => {
   const {actionId} = req.query;
@@ -285,6 +293,19 @@ exports.statisticsAgregate = async (req,res,next) => {
   const numberOfAlertDec = await ClientAlert.find({month: 12}).count()
   const numberOfDispatchActionDec = await Client.find({"clientActions.0.month": 12}).count()
 
-  res.json({numberOfAlertJan,numberOfDispatchActionJan})
+  res.json({
+    jan: {numberOfAlertJan,numberOfDispatchActionJan},
+    feb: {numberOfDispatchActionFeb,numberOfDispatchActionFeb},
+    march: {numberOfAlertMarch,numberOfDispatchActionMarch},
+    april: {numberOfAlertApril,numberOfDispatchActionApril},
+    may: {numberOfAlertMay,numberOfDispatchActionMay},
+    jun: {numberOfAlertJun,numberOfDispatchActionJun},
+    july: {numberOfAlertJul,numberOfDispatchActionJul},
+    Aug: {numberOfAlertAug,numberOfDispatchActionAug},
+    sep: {numberOfAlertSep,numberOfDispatchActionSep},
+    oct: {numberOfAlertOct,numberOfDispatchActionOct},
+    nov: {numberOfAlertNov,numberOfDispatchActionNov},
+    dec: {numberOfAlertDec,numberOfDispatchActionDec}
+  })
 
 }

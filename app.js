@@ -12,6 +12,11 @@ const Staff = require('./models/staff')
 const LocalStrategy = require('passport-local').Strategy;
 const ClientAlert = require('./models/clientAlert')
 const Chart = require('./models/chart')
+const vokeMiddleware = require('./middlewares/vokeMiddleware')
+
+const { uuid } = require('uuidv4');
+
+
 const Pusher = require("pusher");
 const pusher = new Pusher({
   appId: "1236911",
@@ -56,7 +61,7 @@ mongoose.connect(process.env.MONGO_ATLAS_CONNECTION, {
 mongoose.Promise = global.Promise
 
 // test DB connection
-mongoose.connection
+var conn = mongoose.connection
   .once('open', () => {
     console.log('mongodb started')
     
@@ -145,13 +150,45 @@ app.post('/recieve-client-notification', async (req,res)=>{
 })
 
 // chat ///////////////////////++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-app.post('/voke-a-chart', async (req,res,next) => {
+app.post('/voke-a-chart', async (req,res,next) =>{
+  const {senderId,receiverId} = req.body
+
+  
+        // if exist
+        console.log('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
+        const vokedOne = await Chart.find({senderId,receiverId})
+        const vokedTwo = await Chart.find({senderId:receiverId, receiverId:senderId})
+
+        console.log('///////',vokedOne,vokedTwo)
+
+        let user;
+        if(vokedTwo){
+
+          user = vokedTwo
+        }else if(vokedOne){
+          user = vokedOne
+
+        }
+
+        console.log(';;;;;;', user)
+        if(user.length>0){
+          req.body.chatKey = user[0].chatKey
+          console.log('kkjeieiie',user[0]['chatKey'])
+
+        }else{
+
+          req.body.chatKey = uuid()
+        }
+        
+          console.log('jeueu7r4r4u74',req.body.chatKey)
+        // next()
+
+}, async (req,res,next) => {
 
     const {
-        staffOneId,
-        staffTwoId,
         senderId,
-        receiverId
+        receiverId,
+        chatKey
     } = req.body
 
   req.body.time = new Date()
@@ -159,8 +196,8 @@ app.post('/voke-a-chart', async (req,res,next) => {
 
    const newChart = await Chart.collection.insertOne(req.body)
    if(newChart){
-       const allChart = await Chart.find({staffOneId,staffTwoId}).sort({time: 1}).limit(10)
-       console.log(staffOneId)
+       const allChart = await Chart.find({chatKey}).sort({time: 1}).limit(10)
+       console.log(chatKey)
        console.log(allChart)
 
        pusher.trigger("notifications", "vokeAChart", {

@@ -14,7 +14,7 @@ router.post('/register-staff', passport.authenticate("jwt.admin",{session:false}
 router.post('/create-client',  adminController.registerClient)
 
 // create action
-router.post('/create-action', passport.authenticate("jwt.admin",{session:false}), adminController.createAction)
+router.post('/create-action',  adminController.createAction)
 
 // login staff
 router.post('/login', adminController.loginStaff)
@@ -35,7 +35,7 @@ router.get('/get-all-client',  adminController.findAllClient)
 router.get('/get-single-client', passport.authenticate("jwt.admin",{session:false}), adminController.singleClient)
 
 // get all actions
-router.get('/get-all-actions', passport.authenticate("jwt.admin",{session:false}), adminController.findAllAction)
+router.get('/get-all-actions',  adminController.findAllAction)
 
 // get single action
 router.get('/get-single-action', passport.authenticate("jwt.admin",{session:false}), adminController.singleAction)
@@ -56,6 +56,9 @@ router.put('/edit-single-staff', passport.authenticate("jwt.admin",{session:fals
 
 // set profile pic
 router.put('/set-profile-pic', passport.authenticate("jwt.admin",{session:false}), adminController.setProfilePic);
+
+// edit action
+router.put('/edit-action', adminController.editAction)
 
 
 

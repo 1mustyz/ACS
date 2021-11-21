@@ -2,12 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ChartSchema = Schema({
-    
-    staffOneId: {type: String, required: true},
-    staffTwoId: {type: String, required: true},
+    chartKey: {type: String, required: true},
+    senderId: {type: String, required: true},
+    receiverId: {type: String, required: true},
     message: {type: String},
-    senderId: {type: String},
-    receiverId: {type: String},
     time: {type: Date},
 
 }, { timestamps: true });
