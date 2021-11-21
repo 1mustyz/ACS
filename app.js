@@ -127,15 +127,19 @@ app.post('/recieve-client-notification', async (req,res)=>{
  req.body.respond = false
  req.body.time = new Date()
  req.body.month = new Date().getMonth() + 1
+ req.body.alertActive = true
   
+ // insert the alert to database
  const newAlert = await ClientAlert.collection.insertOne(req.body)
  let allAlerts
  if(newAlert){
    
+  // Get all alert from the database
    const allAlert = await ClientAlert.find({})
    allAlerts = allAlert
    if(allAlert){
      
+    // push it to the front end
      pusher.trigger("notifications", "alert", {
        allAlert
       });
@@ -154,7 +158,7 @@ app.post('/voke-a-chart', async (req,res,next) =>{
   const {senderId,receiverId} = req.body
 
   
-        // if exist
+        // if chart exist
         console.log('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
         const vokedOne = await Chart.find({senderId,receiverId})
         const vokedTwo = await Chart.find({senderId:receiverId, receiverId:senderId})
@@ -164,16 +168,18 @@ app.post('/voke-a-chart', async (req,res,next) =>{
         let user;
         if(vokedTwo){
 
-          user = vokedTwo
+          user = [...vokedTwo]
         }else if(vokedOne){
-          user = vokedOne
+          user = [...vokedOne]
 
         }
 
-        console.log(';;;;;;', user)
-        if(user.length>0){
+        console.log(';;;;;;', user.length)
+        // if user exist
+        if(user.length > 0){
+          // use the chatKey
           req.body.chatKey = user[0].chatKey
-          console.log('kkjeieiie',user[0]['chatKey'])
+          console.log('kkjeieiie',user[0].chatKey)
 
         }else{
 
@@ -181,7 +187,7 @@ app.post('/voke-a-chart', async (req,res,next) =>{
         }
         
           console.log('jeueu7r4r4u74',req.body.chatKey)
-        // next()
+        next()
 
 }, async (req,res,next) => {
 
@@ -197,7 +203,6 @@ app.post('/voke-a-chart', async (req,res,next) =>{
    const newChart = await Chart.collection.insertOne(req.body)
    if(newChart){
        const allChart = await Chart.find({chatKey}).sort({time: 1}).limit(10)
-       console.log(chatKey)
        console.log(allChart)
 
        pusher.trigger("notifications", "vokeAChart", {
