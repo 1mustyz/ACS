@@ -4,7 +4,7 @@ const Action = require('../models/action')
 const ClientAlert = require('../models/clientAlert')
 const passport = require('passport');
 const multer = require('multer');
-const {singleUpload} = require('../middlewares/filesMiddleware');
+const {singleUpload,singleFileUpload} = require('../middlewares/filesMiddleware');
 const { uuid } = require('uuidv4');
 const jwt =require('jsonwebtoken');
 const csv = require('csv-parser')
@@ -118,7 +118,6 @@ exports.singleStaff = async (req,res, next) => {
 
 // set profile pic
 exports.setProfilePic = async (req,res, next) => {
-
   singleUpload(req, res, async function(err) {
     if (err instanceof multer.MulterError) {
     return res.json(err.message);
@@ -138,7 +137,9 @@ exports.setProfilePic = async (req,res, next) => {
         
     );
     }
-    });          
+    });
+
+        
   
 }
 
@@ -166,22 +167,51 @@ exports.registerClient = async (req,res,next) => {
   res.json({success: true, message: 'client created successfullty', client});
 }
 
+
+// register a client from a file
 exports.registerClientFromAfile = async (req,res,next) => {
 
   const clients = []
 
-  fs.createReadStream('public/file/sampla_data.csv')
-  .pipe(csv({}))
-  .on('data', (data)=> clients.push(data))
-  .on('end', async () => {
-    // console.log(clients)
-    clients.map(client => {
-      client.clientId = uuid()
-    })
-    console.log(clients)
-    const clientes = await Client.insertMany(clients)
-    res.json({success:true, message: clientes})
-  })
+  singleFileUpload(req, res, async function(err) {
+    if (err instanceof multer.MulterError) {
+    return res.json(err.message);
+    }
+    else if (err) {
+      return res.json(err);
+    }
+    else if (!req.file) {
+      return res.json({"file": req.file, "msg":'Please select file to upload'});
+    }
+    if(req.file){
+        console.log(req.file.path)
+
+        fs.createReadStream(req.file.path)
+        .pipe(csv({}))
+        .on('data', (data)=> clients.push(data))
+        .on('end', async () => {
+          // console.log(clients)
+          clients.map(client => {
+            client.clientId = uuid()
+          })
+          console.log(clients)
+          const clientes = await Client.insertMany(clients)
+
+          try {
+            fs.unlinkSync(req.file.path)
+            //file removed
+          } catch(err) {
+            console.error(err)
+          }
+          res.json({success:true, message: clientes})
+        })
+
+       
+    }
+    });    
+
+
+  
 
 
 

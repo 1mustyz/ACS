@@ -4,12 +4,11 @@ const adminController = require('../controllers/adminController')
 const staffController = require('../controllers/staffController')
 const idGenerator = require('../middlewares/idGenerator')
 const passport = require('passport');
-const { route } = require('.');
 
 /** All post request *//////////////////////////////////////////////
 
 // register staff route
-router.post('/register-staff', passport.authenticate("jwt.admin",{session:false}),idGenerator.staffIdGenerator, adminController.registerStaff)
+router.post('/register-staff', idGenerator.staffIdGenerator, adminController.registerStaff)
 
 // create client
 router.post('/create-client',  adminController.registerClient)
