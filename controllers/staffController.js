@@ -55,8 +55,10 @@ exports.setProfilePic = async (req,res, next) => {
       if(req.file){
           console.log(req.query.username)
           await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: req.file.path}})
+          const editedStaff = await Staff.findOne({username: req.query.username})
+
           return  res.json({success: true,
-          message: req.file.path,
+          message: editedStaff,
                      },
           
       );
@@ -69,7 +71,8 @@ exports.setProfilePic = async (req,res, next) => {
   exports.editStaff = async (req,res,next) => {
     const {username} = req.query;
     await Staff.findOneAndUpdate({username: username}, req.body)
-    res.json({success: true, message: `staff with the username ${username} has been edited`})
+    const editedStaff = await Staff.findOne({username})
+    res.json({success: true, message: editedStaff})
   }
 
   // get all client actions based on staff
