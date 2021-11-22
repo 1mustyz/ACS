@@ -295,7 +295,7 @@ exports.statisticsAgregate = async (req,res,next) => {
 
   res.json({
     jan: {numberOfAlertJan,numberOfDispatchActionJan},
-    feb: {numberOfDispatchActionFeb,numberOfDispatchActionFeb},
+    feb: {numberOfAlertFeb,numberOfDispatchActionFeb},
     march: {numberOfAlertMarch,numberOfDispatchActionMarch},
     april: {numberOfAlertApril,numberOfDispatchActionApril},
     may: {numberOfAlertMay,numberOfDispatchActionMay},

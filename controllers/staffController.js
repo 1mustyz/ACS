@@ -1,6 +1,9 @@
 const Staff = require('../models/staff')
 const Client = require('../models/client')
+const ClientAlert = require('../models/clientAlert')
 const {uuid} = require('uuidv4')
+const multer = require('multer');
+const {singleUpload} = require('../middlewares/filesMiddleware');
 
 // save action perform on client
 exports.saveClientAction = async (req,res,next) => {
@@ -9,7 +12,7 @@ exports.saveClientAction = async (req,res,next) => {
     clientActions.month = new Date().getMonth() + 1
 
     const client = await Client.findOneAndUpdate({clientId},{$push:{"clientActions": clientActions}})
-
+    await ClientAlert.findOneAndUpdate({clientId},{$set:{"alertActive": false}})
     console.log(clientActions)
     res.json({success: true, message: "client action saved successfully", client});
 }
@@ -35,3 +38,55 @@ exports.logout = (req, res,next) => {
         res.json({success: true, message: "logout successfully"});
     }
 }
+
+// set profile pic
+exports.setProfilePic = async (req,res, next) => {
+
+    singleUpload(req, res, async function(err) {
+      if (err instanceof multer.MulterError) {
+      return res.json(err.message);
+      }
+      else if (err) {
+        return res.json(err);
+      }
+      else if (!req.file) {
+        return res.json({"image": req.file, "msg":'Please select an image to upload'});
+      }
+      if(req.file){
+          console.log(req.query.username)
+          await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: req.file.path}})
+          return  res.json({success: true,
+          message: req.file.path,
+                     },
+          
+      );
+      }
+      });          
+    
+  }
+
+  // edit staff
+  exports.editStaff = async (req,res,next) => {
+    const {username} = req.query;
+    await Staff.findOneAndUpdate({username: username}, req.body)
+    res.json({success: true, message: `staff with the username ${username} has been edited`})
+  }
+
+  // get all client actions based on staff
+  exports.getStaffActionOnClient = async (req,res,next) => {
+    const {username, clientId} = req.query;
+    let staffActionsClient
+
+    const client = await Client.find({clientId})
+
+    client.forEach(client => {
+      // console.log(client.clientActions)
+      staffActionsClient = client.clientActions.filter(action => {
+        return action.staffId == username
+      })
+    });
+
+    console.log(staffActionsClient)
+    res.json({success: true, message: staffActionsClient})
+    
+  }

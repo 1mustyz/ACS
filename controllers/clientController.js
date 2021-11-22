@@ -7,3 +7,11 @@ exports.getAllAlert = async (req,res,next) => {
     res.json({success:true, message: allAlert})
 
 }
+
+exports.getAllActiveAlert = async (req,res,next) => {
+
+    const allActiveAlert = await ClientAlert.find({"alertActive": true})
+       
+    res.json({success:true, message: allActiveAlert})
+
+}

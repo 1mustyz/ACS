@@ -8,7 +8,6 @@ const ClientAlertSchema = Schema({
     alertActive: { type: Boolean},
     time: {type: Date},
     month: {type: Number},
-    respond: { type: Boolean}
 }, { timestamps: true });
 
 const ClientAlert = mongoose.model('clientAlert', ClientAlertSchema)

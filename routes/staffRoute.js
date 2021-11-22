@@ -12,6 +12,12 @@ router.put('/save-client-action', staffController.saveClientAction)
 // save client documentation
 router.put('/document-client-action', staffController.documentClientAction)
 
+// save profile pic
+router.put('/save-staff-profile-pic', staffController.setProfilePic)
+
+// edit staff
+router.put('/edit-staff', staffController.editStaff)
+
 
 /** All get request *//////////////////////////////////////////////////////////
 
@@ -20,6 +26,9 @@ router.get('/get-all-staff', adminController.findAllStaff)
 
 // get prev chart
 router.get('/get-prev-chart', chartController.getPrevChart)
+
+// get staff action based on client
+router.get('/get-staff-actions-base-on-client', staffController.getStaffActionOnClient)
 
 // logout user
 router.get('/logout', staffController.logout)
