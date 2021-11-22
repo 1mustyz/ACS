@@ -25,7 +25,7 @@ exports.getPrevChart = async (req,res,next) => {
 
     }
 
-    const prevChart = await Chart.find({chatKey}).sort({time:1}).limit(10)
+    const prevChart = await Chart.find({chatKey}).sort({time:1})
     res.json({success:true, message: prevChart})
     
 

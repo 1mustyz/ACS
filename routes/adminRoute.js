@@ -4,6 +4,7 @@ const adminController = require('../controllers/adminController')
 const staffController = require('../controllers/staffController')
 const idGenerator = require('../middlewares/idGenerator')
 const passport = require('passport');
+const { route } = require('.');
 
 /** All post request *//////////////////////////////////////////////
 
@@ -12,6 +13,9 @@ router.post('/register-staff', passport.authenticate("jwt.admin",{session:false}
 
 // create client
 router.post('/create-client',  adminController.registerClient)
+
+// create client from a file
+router.post('/create-client-from-file', adminController.registerClientFromAfile)
 
 // create action
 router.post('/create-action',  adminController.createAction)

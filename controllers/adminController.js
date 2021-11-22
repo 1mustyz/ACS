@@ -7,6 +7,8 @@ const multer = require('multer');
 const {singleUpload} = require('../middlewares/filesMiddleware');
 const { uuid } = require('uuidv4');
 const jwt =require('jsonwebtoken');
+const csv = require('csv-parser')
+const fs = require('fs')
 
 // staff registration controller
 exports.registerStaff = async (req, res, next) => {
@@ -37,6 +39,7 @@ exports.registerStaff = async (req, res, next) => {
       res.json({ success: false, error })
     }
   }
+
 
   // staff login controller
 exports.loginStaff = (req, res, next) => {
@@ -162,6 +165,29 @@ exports.registerClient = async (req,res,next) => {
   const client = await Client.collection.insertOne(req.body)
   res.json({success: true, message: 'client created successfullty', client});
 }
+
+exports.registerClientFromAfile = async (req,res,next) => {
+
+  const clients = []
+
+  fs.createReadStream('public/file/sampla_data.csv')
+  .pipe(csv({}))
+  .on('data', (data)=> clients.push(data))
+  .on('end', async () => {
+    // console.log(clients)
+    clients.map(client => {
+      client.clientId = uuid()
+    })
+    console.log(clients)
+    const clientes = await Client.insertMany(clients)
+    res.json({success:true, message: clientes})
+  })
+
+
+
+
+}
+
 
 // delete or remove client
 exports.removeClient = async (req,res,next) => {
