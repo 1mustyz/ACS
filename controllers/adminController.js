@@ -40,6 +40,20 @@ exports.registerStaff = async (req, res, next) => {
     }
   }
 
+  // reset password
+  exports.changePassword = async (req, res, next) => {
+    const {username} = req.query
+    console.log(username)
+    // try {
+      const user = await Staff.find({username})
+      console.log(user)
+      await user.changePassword(req.body.oldPassword, req.body.newPassword)
+      await user.save()
+      res.json({message: 'password reset successful', user})
+    // } catch (error) {
+    //     res.json({ message: 'something went wrong', error })
+    // }
+  }
 
   // staff login controller
 exports.loginStaff = (req, res, next) => {
@@ -165,6 +179,13 @@ exports.registerClient = async (req,res,next) => {
   req.body.clientId = uuid()
   const client = await Client.collection.insertOne(req.body)
   res.json({success: true, message: 'client created successfullty', client});
+}
+
+// edit client 
+exports.editClient = async (req,res,next) => {
+  const {clientId} = req.query;
+  await Client.findOneAndUpdate({clientId: clientId}, req.body)
+  res.json({success: true, message: `client with the clientId ${clientId} has been edited`})
 }
 
 
@@ -311,6 +332,25 @@ exports.statistics = async(req,res,next) => {
 
   res.json({numberOfAlert,numberOfClient,numberOfStaff,numberOfDispatchAction})
 }
+
+// all client dispatch action
+exports.clientDispatchAction = async (req,res,next) => {
+  const result = await Client.find({},{clientActions: 1, _id: 0})
+
+  const sumArray = []
+  result.map(client => {
+    sumArray.push(client.clientActions.length)
+  })
+  console.log(sumArray)
+
+  let sumTotal = sumArray.reduce((a,b)=> (+a +  +b),0 )
+
+  console.log(sumTotal)
+
+  res.json({success:true, totalDispatchAction: sumTotal})
+
+}
+
 
 exports.statisticsAgregate = async (req,res,next) => {
   const numberOfAlertJan = await ClientAlert.find({month: 1}).count()

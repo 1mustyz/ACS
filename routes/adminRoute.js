@@ -47,6 +47,9 @@ router.get('/get-single-action', passport.authenticate("jwt.admin",{session:fals
 router.get('/statistics', adminController.statistics)
 router.get('/statistics-aggregate', adminController.statisticsAgregate)
 
+// get all client dispatch action
+router.get('/get-all-clients-dispatch-action', adminController.clientDispatchAction)
+
 // logout user
 router.get('/logout', adminController.logout)
 
@@ -62,6 +65,9 @@ router.put('/set-profile-pic', passport.authenticate("jwt.admin",{session:false}
 
 // edit action
 router.put('/edit-action', adminController.editAction)
+
+// change password
+router.post('/change-password', adminController.changePassword)
 
 
 
