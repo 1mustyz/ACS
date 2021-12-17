@@ -43,16 +43,29 @@ exports.registerStaff = async (req, res, next) => {
   // reset password
   exports.changePassword = async (req, res, next) => {
     const {username} = req.query
-    console.log(username)
-    // try {
-      const user = await Staff.find({username})
-      console.log(user)
-      await user.changePassword(req.body.oldPassword, req.body.newPassword)
-      await user.save()
-      res.json({message: 'password reset successful', user})
-    // } catch (error) {
-    //     res.json({ message: 'something went wrong', error })
-    // }
+    Staff.findOne({ username },(err, user) => {
+      // Check if error connecting
+      if (err) {
+        res.json({ success: false, message: err }); // Return error
+      } else {
+        // Check if user was found in database
+        if (!user) {
+          res.json({ success: false, message: 'User not found' }); // Return error, user was not found in db
+        } else {
+          user.changePassword(req.body.oldpassword, req.body.newpassword, function(err) {
+             if(err) {
+                      if(err.name === 'IncorrectPasswordError'){
+                           res.json({ success: false, message: 'Incorrect password' }); // Return error
+                      }else {
+                          res.json({ success: false, message: 'Something went wrong!! Please try again after sometimes.' });
+                      }
+            } else {
+              res.json({ success: true, message: 'Your password has been changed successfully' });
+             }
+           })
+        }
+      }
+    });
   }
 
   // staff login controller
@@ -184,7 +197,7 @@ exports.registerClient = async (req,res,next) => {
 // edit client 
 exports.editClient = async (req,res,next) => {
   const {clientId} = req.query;
-  await Client.findOneAndUpdate({clientId: clientId}, req.body)
+  await Client.findOneAndUpdate({clientId}, req.body)
   res.json({success: true, message: `client with the clientId ${clientId} has been edited`})
 }
 

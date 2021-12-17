@@ -66,6 +66,9 @@ router.put('/set-profile-pic', passport.authenticate("jwt.admin",{session:false}
 // edit action
 router.put('/edit-action', adminController.editAction)
 
+// edit client
+router.put('/edit-client', adminController.editClient)
+
 // change password
 router.post('/change-password', adminController.changePassword)
 
