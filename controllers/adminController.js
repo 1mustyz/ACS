@@ -9,6 +9,8 @@ const { uuid } = require('uuidv4');
 const jwt =require('jsonwebtoken');
 const csv = require('csv-parser')
 const fs = require('fs')
+const msToTime = require('../middlewares/timeMiddleware')
+
 
 // staff registration controller
 exports.registerStaff = async (req, res, next) => {
@@ -361,6 +363,53 @@ exports.clientDispatchAction = async (req,res,next) => {
   console.log(sumTotal)
 
   res.json({success:true, totalDispatchAction: sumTotal})
+
+}
+
+// all client dispatch action base on time and date
+exports.clientDispatchActionAtParticularTime = async (req,res,next) => {
+  const d = new Date()
+  let obj = {} 
+
+ async function recursion(month,day,time){
+    if(time == 24){
+
+      rslt = await Client.find({
+        'clientActions.month': month,
+        'clientActions.day': day, 
+        'clientActions.createdAt': time},
+        {clientActions: 1, _id: 0})
+
+        obj[0] = rslt.map(action => {
+          return action.clientActions.filter(innerAction => {
+             if(innerAction.createdAt == time) return innerAction
+           })
+         })
+
+    }else{
+
+      rslt = await Client.find({
+        'clientActions.month': month,
+        'clientActions.day': day, 
+        'clientActions.createdAt': time},
+        {clientActions: 1, _id: 0})
+
+        obj[time] = rslt.map(action => {
+         return action.clientActions.filter(innerAction => {
+            if(innerAction.createdAt == time) return innerAction
+          })
+        })
+      // console.log(obj)
+
+      await recursion(month,day,time - 1)
+
+    }
+
+  }
+  await recursion(d.getMonth() + 1, d.getDay(), (parseInt(msToTime(d.getTime())) + 1))
+  console.log(d.getMonth() + 1, d.getDay(), (parseInt(msToTime(d.getTime())) + 1))
+  // console.log(obj)
+  res.json({success: true, obj})
 
 }
 

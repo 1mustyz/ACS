@@ -4,12 +4,18 @@ const ClientAlert = require('../models/clientAlert')
 const {uuid} = require('uuidv4')
 const multer = require('multer');
 const {singleUpload} = require('../middlewares/filesMiddleware');
+const msToTime = require('../middlewares/timeMiddleware')
 
 // save action perform on client
 exports.saveClientAction = async (req,res,next) => {
     const {clientId,clientActions} = req.body
     clientActions.clientActionId = uuid()
     clientActions.month = new Date().getMonth() + 1
+
+    clientActions.createdAt = parseInt( msToTime(new Date().getTime())) + 1
+    clientActions.day = new Date().getDay()
+
+    // console.log(clientActions.createdAt)
 
     const client = await Client.findOneAndUpdate({clientId},{$push:{"clientActions": clientActions}})
     await ClientAlert.findOneAndUpdate({clientId},{$set:{"alertActive": false}})

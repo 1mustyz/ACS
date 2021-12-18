@@ -50,6 +50,9 @@ router.get('/statistics-aggregate', adminController.statisticsAgregate)
 // get all client dispatch action
 router.get('/get-all-clients-dispatch-action', adminController.clientDispatchAction)
 
+// get all client dispatch action base on time and date
+router.get('/get-all-clients-dispatch-action-at-particular-time', adminController.clientDispatchActionAtParticularTime)
+
 // logout user
 router.get('/logout', adminController.logout)
 
