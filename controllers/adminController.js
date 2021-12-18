@@ -231,12 +231,12 @@ exports.registerClientFromAfile = async (req,res,next) => {
           console.log(clients)
           const clientes = await Client.insertMany(clients)
 
-          // try {
-          //   fs.unlinkSync(req.file.path)
-          //   //file removed
-          // } catch(err) {
-          //   console.error(err)
-          // }
+          try {
+            fs.unlinkSync(req.file.path)
+            //file removed
+          } catch(err) {
+            console.error(err)
+          }
           res.json({success:true, message: clientes})
         })
 
