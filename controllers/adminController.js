@@ -371,42 +371,49 @@ exports.clientDispatchActionAtParticularTime = async (req,res,next) => {
   const d = new Date()
   let obj = {} 
 
+ const client = await Client.find({},
+    {clientActions: 1, _id: 0})
+
  async function recursion(month,day,time){
-    if(time == 24){
+    let data =  []
 
-      rslt = await Client.find({
-        'clientActions.month': month,
-        'clientActions.day': day, 
-        'clientActions.createdAt': time},
-        {clientActions: 1, _id: 0})
-
-        obj[0] = rslt.map(action => {
-          return action.clientActions.filter(innerAction => {
-             if(innerAction.createdAt == time) return innerAction
+    if(time < 1){
+      return
+    }
+    else if(time == 24){
+      
+        client.forEach(action => {
+          if(action.clientActions.length > 0){
+           action.clientActions.forEach(requiredAction => {
+             if(requiredAction.month == month && requiredAction.createdAt == time && requiredAction.day == day){
+               data.push(requiredAction)
+             }
            })
-         })
+          }
+           
+       })
+       obj[0] = data 
 
     }else{
-
-      rslt = await Client.find({
-        'clientActions.month': month,
-        'clientActions.day': day, 
-        'clientActions.createdAt': time},
-        {clientActions: 1, _id: 0})
-
-        obj[time] = rslt.map(action => {
-         return action.clientActions.filter(innerAction => {
-            if(innerAction.createdAt == time) return innerAction
-          })
+      
+          client.forEach(action => {
+            if(action.clientActions.length > 0){
+             action.clientActions.forEach(requiredAction => {
+               if(requiredAction.month == month && requiredAction.createdAt == time && requiredAction.day == day){
+                 data.push(requiredAction)
+               }
+             })
+            }
+             
         })
-      // console.log(obj)
-
-      await recursion(month,day,time - 1)
-
+        obj[time] = data
+     
+        await recursion(month,day,(time - 1))
     }
 
   }
   await recursion(d.getMonth() + 1, d.getDay(), (parseInt(msToTime(d.getTime())) + 1))
+  // recursion(12,6,22)
   console.log(d.getMonth() + 1, d.getDay(), (parseInt(msToTime(d.getTime())) + 1))
   // console.log(obj)
   res.json({success: true, obj})

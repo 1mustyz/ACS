@@ -84,7 +84,7 @@ exports.setProfilePic = async (req,res, next) => {
   // get all client actions based on staff
   exports.getStaffActionOnClient = async (req,res,next) => {
     const {username, clientId} = req.query;
-    let staffActionsClient
+    let staffActionsClient = []
 
     const client = await Client.find({clientId})
 
