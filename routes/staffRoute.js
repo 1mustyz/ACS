@@ -18,6 +18,9 @@ router.put('/save-staff-profile-pic', staffController.setProfilePic)
 // edit staff
 router.put('/edit-staff', staffController.editStaff)
 
+// save client sud
+router.put('/client-sud', staffController.createSUD)
+
 
 /** All get request *//////////////////////////////////////////////////////////
 
@@ -32,6 +35,9 @@ router.get('/get-staff-actions-base-on-client', staffController.getStaffActionOn
 
 // logout user
 router.get('/logout', staffController.logout)
+
+// client demographic
+router.get('/get-client-demographic', staffController.getClientDemographic)
 
 
 /** All post request *//////////////////////////////////////////////////////////

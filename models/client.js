@@ -6,7 +6,8 @@ const ClientSchema = Schema({
     fullName: { type: String},
     phone: { type: String},
     clientLocation: {type: String},
-    clientActions: [{type: Object}]
+    clientActions: [{type: Object}],
+    sud: {type: Object}
 }, { timestamps: true });
 
 const Client = mongoose.model('client', ClientSchema)

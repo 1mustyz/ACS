@@ -34,6 +34,17 @@ exports.documentClientAction = async (req,res,next) => {
     res.json({success: true, message: "client documentation saved successfully"});
 }
 
+// client SUD
+exports.createSUD = async (req,res,next) => {
+  const {clientId,sud} = req.body
+
+  const client = await Client.findOneAndUpdate({clientId},
+  {$set:{sud: sud}})
+
+  // console.log(clientActions)
+  res.json({success: true, message: "client sud saved successfully"});
+}
+
 
 // logout
 exports.logout = (req, res,next) => {
@@ -98,4 +109,13 @@ exports.setProfilePic = async (req,res, next) => {
     console.log(staffActionsClient)
     res.json({success: true, message: staffActionsClient})
     
+  }
+
+  // Client Demographic
+  exports.getClientDemographic = async (req,res,next) =>{
+    const {clientId} = req.query
+
+    const clientDemographic = await Client.findOne({clientId},{clientActions:0,_id:0})
+    res.json({success: true, clientDemographic})
+
   }
