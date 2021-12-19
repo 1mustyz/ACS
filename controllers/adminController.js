@@ -372,7 +372,7 @@ exports.clientDispatchActionAtParticularTime = async (req,res,next) => {
   let obj = {} 
 
  const client = await Client.find({},
-    {clientActions: 1, _id: 0})
+    {clientActions: 1, clientId: 1, fullName: 1, _id: 0})
 
  async function recursion(month,day,time){
     let data =  []
@@ -386,7 +386,9 @@ exports.clientDispatchActionAtParticularTime = async (req,res,next) => {
           if(action.clientActions.length > 0){
            action.clientActions.forEach(requiredAction => {
              if(requiredAction.month == month && requiredAction.createdAt == time && requiredAction.day == day){
-               data.push(requiredAction)
+              requiredAction.clientId = action.clientId
+              requiredAction.clientName = action.fullName 
+              data.push(requiredAction)
              }
            })
           }
@@ -400,7 +402,9 @@ exports.clientDispatchActionAtParticularTime = async (req,res,next) => {
             if(action.clientActions.length > 0){
              action.clientActions.forEach(requiredAction => {
                if(requiredAction.month == month && requiredAction.createdAt == time && requiredAction.day == day){
-                 data.push(requiredAction)
+                requiredAction.clientId = action.clientId
+                requiredAction.clientName = action.fullName  
+                data.push(requiredAction)
                }
              })
             }
