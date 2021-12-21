@@ -366,63 +366,94 @@ exports.clientDispatchAction = async (req,res,next) => {
 
 }
 
-// all client dispatch action base on time and date
 exports.clientDispatchActionAtParticularTime = async (req,res,next) => {
-  const d = new Date()
-  let obj = {} 
+  let data = []
 
- const client = await Client.find({},
+  function compare( a, b ) {
+    if ( a.createdAt < b.createdAt ){
+      return -1;
+    }
+    if ( a.createdAt > b.createdAt ){
+      return 1;
+    }
+    return 0;
+  }
+
+   const client = await Client.find({},
     {clientActions: 1, clientId: 1, fullName: 1, _id: 0})
 
- async function recursion(month,day,time){
-    let data =  []
-
-    if(time < 1){
-      return
-    }
-    else if(time == 24){
-      
-        client.forEach(action => {
-          if(action.clientActions.length > 0){
-           action.clientActions.forEach(requiredAction => {
-             if(requiredAction.month == month && requiredAction.createdAt == time && requiredAction.day == day){
-              requiredAction.clientId = action.clientId
-              requiredAction.clientName = action.fullName 
-              data.push(requiredAction)
-             }
-           })
-          }
-           
-       })
-       obj[0] = data 
-
-    }else{
-      
-          client.forEach(action => {
-            if(action.clientActions.length > 0){
-             action.clientActions.forEach(requiredAction => {
-               if(requiredAction.month == month && requiredAction.createdAt == time && requiredAction.day == day){
-                requiredAction.clientId = action.clientId
-                requiredAction.clientName = action.fullName  
-                data.push(requiredAction)
-               }
-             })
-            }
-             
-        })
-        obj[time] = data
-     
-        await recursion(month,day,(time - 1))
-    }
-
-  }
-  await recursion(d.getMonth() + 1, d.getDay(), (parseInt(msToTime(d.getTime())) + 1))
-  // recursion(12,6,22)
-  console.log(d.getMonth() + 1, d.getDay(), (parseInt(msToTime(d.getTime())) + 1))
-  // console.log(obj)
-  res.json({success: true, obj})
+    client.forEach(action => {
+        if(action.clientActions.length > 0){
+          action.clientActions.forEach(requiredAction => {
+            requiredAction.clientId = action.clientId
+            requiredAction.clientName = action.fullName 
+            data.push(requiredAction)
+          })
+        }
+      })           
+    data.sort(compare).reverse()  
+    // console.log(data)
+  res.json({success: true, data})
 
 }
+
+// all client dispatch action base on time and date
+// exports.clientDispatchActionAtParticularTime = async (req,res,next) => {
+//   const d = new Date()
+//   let obj = {} 
+
+//  const client = await Client.find({},
+//     {clientActions: 1, clientId: 1, fullName: 1, _id: 0})
+
+//  async function recursion(month,day,time){
+//     let data =  []
+
+//     if(time < 1){
+//       return
+//     }
+//     else if(time == 24){
+      
+//         client.forEach(action => {
+//           if(action.clientActions.length > 0){
+//            action.clientActions.forEach(requiredAction => {
+//              if(requiredAction.month == month && requiredAction.createdAt == time && requiredAction.day == day){
+//               requiredAction.clientId = action.clientId
+//               requiredAction.clientName = action.fullName 
+//               data.push(requiredAction)
+//              }
+//            })
+//           }
+           
+//        })
+//        obj[0] = data 
+
+//     }else{
+      
+//           client.forEach(action => {
+//             if(action.clientActions.length > 0){
+//              action.clientActions.forEach(requiredAction => {
+//                if(requiredAction.month == month && requiredAction.createdAt == time && requiredAction.day == day){
+//                 requiredAction.clientId = action.clientId
+//                 requiredAction.clientName = action.fullName  
+//                 data.push(requiredAction)
+//                }
+//              })
+//             }
+             
+//         })
+//         obj[time] = data
+     
+//         await recursion(month,day,(time - 1))
+//     }
+
+//   }
+//   await recursion(d.getMonth() + 1, d.getDay(), (parseInt(msToTime(d.getTime())) + 1))
+//   // recursion(12,6,22)
+//   console.log(d.getMonth() + 1, d.getDay(), (parseInt(msToTime(d.getTime())) + 1))
+//   // console.log(obj)
+//   res.json({success: true, obj})
+
+// }
 
 
 exports.statisticsAgregate = async (req,res,next) => {

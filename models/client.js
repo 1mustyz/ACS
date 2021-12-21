@@ -5,6 +5,7 @@ const ClientSchema = Schema({
     clientId: { type: String, required: true},
     fullName: { type: String},
     phone: { type: String},
+    email: { type: String},
     clientLocation: {type: String},
     clientActions: [{type: Object}],
     sud: {type: Object}

@@ -12,7 +12,7 @@ exports.saveClientAction = async (req,res,next) => {
     clientActions.clientActionId = uuid()
     clientActions.month = new Date().getMonth() + 1
 
-    clientActions.createdAt = parseInt( msToTime(new Date().getTime())) + 1
+    clientActions.createdAt = msToTime(new Date().getTime() + Math.abs((new Date().getTimezoneOffset() * 60000))) 
     clientActions.day = new Date().getDay()
 
     // console.log(clientActions.createdAt)
