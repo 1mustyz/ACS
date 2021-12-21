@@ -28,6 +28,13 @@ router.post('/login', adminController.loginStaff)
 // get all staff
 router.get('/get-all-staff', adminController.findAllStaff)
 
+// get only staff
+router.get('/get-only-staff', adminController.getOnlyStaff)
+
+// get only admin
+router.get('/get-only-admin', adminController.getOnlyAdmin)
+
+
 // get single staff
 router.get('/get-single-staff', passport.authenticate("jwt.admin",{session:false}), adminController.singleStaff)
 
@@ -68,6 +75,9 @@ router.put('/set-profile-pic', passport.authenticate("jwt.admin",{session:false}
 
 // edit action
 router.put('/edit-action', adminController.editAction)
+
+// add contact list
+router.put('/add-contact', adminController.addContactList)
 
 // edit client
 router.put('/edit-client', adminController.editClient)

@@ -135,6 +135,24 @@ exports.findAllStaff = async (req,res, next) => {
    : res.json({success: false, message: result,})
 }
 
+// get staff only
+exports.getOnlyStaff = async (req,res, next) => {
+
+  const result = await Staff.find({role: "staff"});
+  result.length > 0
+   ? res.json({success: true, message: result,})
+   : res.json({success: false, message: result,})
+}
+
+// get admin only
+exports.getOnlyAdmin = async (req,res, next) => {
+
+  const result = await Staff.find({role: "admin"});
+  result.length > 0
+   ? res.json({success: true, message: result,})
+   : res.json({success: false, message: result,})
+}
+
 // find single staff
 exports.singleStaff = async (req,res, next) => {
   const {username} = req.query
@@ -295,8 +313,16 @@ exports.createAction = async (req,res,next) => {
 // edit action
 exports.editAction = async (req,res,next) => {
   const {actionId,actionName,actionInfo} = req.body
-  await Action.updateOne({actionId},{actionName,actionInfo})
+  await Action.findOneAndUpdate({actionId},{actionName,actionInfo})
   res.json({success: true, message: 'action edited successfullty'});
+}
+
+// add contactlist to action
+exports.addContactList = async (req,res,next) => {
+  const {actionId, contact} = req.body
+ const result = await Action.findOneAndUpdate({actionId},{$push:{"contactList":contact}})
+  res.json({success: true, message: result});
+
 }
 
 
@@ -333,7 +359,7 @@ exports.statistics = async(req,res,next) => {
 
   //
   const client = await Client.find({clientActions:{$exists:true}}, {clientActions: 1})
-  const numberOfStaff = await Staff.find({}).count()
+  const numberOfStaff = await Staff.find({role: "staff"}).count()
   const numberOfClient = await Client.find({}).count()
 
   let numberOfDispatchAction = 0

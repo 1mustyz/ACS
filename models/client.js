@@ -8,7 +8,7 @@ const ClientSchema = Schema({
     email: { type: String},
     clientLocation: {type: String},
     clientActions: [{type: Object}],
-    sud: {type: Object}
+    sud: {type: Object, default: null}
 }, { timestamps: true });
 
 const Client = mongoose.model('client', ClientSchema)
