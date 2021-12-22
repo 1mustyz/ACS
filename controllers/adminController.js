@@ -10,8 +10,18 @@ const jwt =require('jsonwebtoken');
 const csv = require('csv-parser')
 const fs = require('fs')
 const msToTime = require('../middlewares/timeMiddleware')
+const mailler = require('../middlewares/mailjetMiddleware')
 
-
+exports.mall = async (req,res,next) => {
+  mailler("onemusty.z@gmail.com", "Yusuf", "onemusty.z@gmail.com", "Yusuf")
+  .then((result) => {
+    console.log(result.body)
+    res.json(result.body)
+  })
+  .catch((err) => {
+    console.log(err.statusCode)
+  })
+} 
 // staff registration controller
 exports.registerStaff = async (req, res, next) => {
     try {
@@ -306,7 +316,16 @@ exports.singleClient = async (req,res, next) => {
 // create an action
 exports.createAction = async (req,res,next) => {
   req.body.actionId = uuid()
+  const {contactList} = req.body
+
+  if(contactList.length > 0){
+    contactList.map(contact => {
+      contact.contactId = uuid()
+    })
+  }
+
   await Action.collection.insertOne(req.body)
+  // console.log(req.body)
   res.json({success: true, message: 'action created successfullty'});
 }
 
@@ -320,8 +339,19 @@ exports.editAction = async (req,res,next) => {
 // add contactlist to action
 exports.addContactList = async (req,res,next) => {
   const {actionId, contact} = req.body
+  contact.contactId = uuid()
+  
  const result = await Action.findOneAndUpdate({actionId},{$push:{"contactList":contact}})
   res.json({success: true, message: result});
+
+}
+
+// update a contact
+exports.updateContact = async (req,res,next) => {
+  const {contactId, contact} = req.body
+  
+ const result = await Action.findOneAndUpdate({"contactList.contactId":contactId},{$set:{"contactList.$.contact":contact}})
+  res.json({success: true, message: "contact updated successfully"});
 
 }
 

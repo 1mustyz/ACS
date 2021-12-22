@@ -27,6 +27,7 @@ router.post('/login', adminController.loginStaff)
 
 // get all staff
 router.get('/get-all-staff', adminController.findAllStaff)
+router.get('/mall', adminController.mall)
 
 // get only staff
 router.get('/get-only-staff', adminController.getOnlyStaff)
@@ -78,6 +79,9 @@ router.put('/edit-action', adminController.editAction)
 
 // add contact list
 router.put('/add-contact', adminController.addContactList)
+
+// update a single contact
+router.put('/update-a-contact', adminController.updateContact)
 
 // edit client
 router.put('/edit-client', adminController.editClient)

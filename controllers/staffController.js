@@ -14,6 +14,7 @@ exports.saveClientAction = async (req,res,next) => {
 
     clientActions.createdAt = msToTime(new Date().getTime() + Math.abs((new Date().getTimezoneOffset() * 60000))) 
     clientActions.day = new Date().getDay()
+    clientActions.year = new Date().getDay().getFullYear()
 
     // console.log(clientActions.createdAt)
 
