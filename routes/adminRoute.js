@@ -71,8 +71,10 @@ router.get('/logout', adminController.logout)
 // edit single staff
 router.put('/edit-single-staff', passport.authenticate("jwt.admin",{session:false}), adminController.editStaff)
 
+// passport.authenticate("jwt.admin",{session:false}),
+
 // set profile pic
-router.put('/set-profile-pic', passport.authenticate("jwt.admin",{session:false}), adminController.setProfilePic);
+router.put('/set-profile-pic',  adminController.setProfilePic);
 
 // edit action
 router.put('/edit-action', adminController.editAction)
