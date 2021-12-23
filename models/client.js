@@ -6,6 +6,7 @@ const ClientSchema = Schema({
     fullName: { type: String},
     phone: { type: String},
     email: { type: String},
+    image: { type: String, default: '1.jpg' },
     clientLocation: {type: String},
     clientActions: [{type: Object}],
     sud: {type: Object, default: null}

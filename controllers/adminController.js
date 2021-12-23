@@ -186,8 +186,17 @@ exports.setProfilePic = async (req,res, next) => {
       return res.json({"image": req.file, "msg":'Please select an image to upload'});
     }
     if(req.file){
-        console.log(req.query.username)
+
+      // console.log(Object.keys(req.query).length)
+      
+      if(req.query.hasOwnProperty('username') && Object.keys(req.query).length == 1){
         await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: req.file.path}})
+
+      }else if(req.query.hasOwnProperty('clientId') && Object.keys(req.query).length == 1){
+        await Client.findOneAndUpdate({clientId: req.query.clientId},{$set: {image: req.file.path}})
+      }
+
+        
         return  res.json({success: true,
         message: req.file.path,
                    },
