@@ -398,6 +398,14 @@ exports.updateContact = async (req,res,next) => {
 
 }
 
+exports.deleteSingleContact = async (req,res,next) => {
+  const {contactId} = req.query
+  
+ const result = await Action.findOneAndUpdate({"contactList.contactId":contactId},{$pull: {contactList:{contactId}}})
+  res.json({success: true, message: "contact deleted successfully"});
+
+}
+
 
 // delete or remove client
 exports.removeAction = async (req,res,next) => {

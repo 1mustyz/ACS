@@ -104,4 +104,6 @@ router.delete('/delete-single-client', passport.authenticate("jwt.admin",{sessio
 // delete action
 router.delete('/delete-single-action', passport.authenticate("jwt.admin",{session:false}), adminController.removeAction)
 
+// delete a contact
+router.put('/delete-single-contact', adminController.deleteSingleContact)
 module.exports = router;
