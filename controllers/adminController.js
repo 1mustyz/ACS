@@ -196,7 +196,7 @@ exports.setProfilePic = async (req,res, next) => {
       // }
 
       if(req.query.hasOwnProperty('username') && Object.keys(req.query).length == 1){
-        const result = await Staff.findOne({username: req.query.username},{image: 1, _id: 0})
+        const result = await Staff.findOne({username: req.query.username},{_id: 0,image: 1})
 
         try {
           fs.unlinkSync(result.image)
@@ -208,13 +208,13 @@ exports.setProfilePic = async (req,res, next) => {
         await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: req.file.path}})
         const editedStaff = await Staff.findOne({username: req.query.username})
         
-        return  res.json({success: true,
+        res.json({success: true,
           message: editedStaff,
                      },
           
       );
       }else if(req.query.hasOwnProperty('clientId') && Object.keys(req.query).length == 1){
-        const result = await Client.findOne({clientId: req.query.clientId},{image: 1, _id: 0})
+        const result = await Client.findOne({clientId: req.query.clientId},{_id: 0,image: 1,})
 
       try {
         fs.unlinkSync(result.image)
@@ -227,7 +227,7 @@ exports.setProfilePic = async (req,res, next) => {
         await Client.findOneAndUpdate({clientId: req.query.clientId},{$set: {image: req.file.path}})
         const editedClient = await Client.findOne({clientId: req.query.clientId})
 
-        return  res.json({success: true,
+        res.json({success: true,
           message: editedClient,
                      },
           
