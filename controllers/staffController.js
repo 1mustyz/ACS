@@ -72,6 +72,15 @@ exports.setProfilePic = async (req,res, next) => {
       }
       if(req.file){
           console.log(req.query.username)
+          const result = await Staff.findOne({username: req.query.username},{image: 1, _id: 0})
+
+        try {
+          fs.unlinkSync(result.image)
+          //file removed
+        } catch(err) {
+          console.error(err)
+        }
+          console.log(result)
           await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: req.file.path}})
           const editedStaff = await Staff.findOne({username: req.query.username})
 

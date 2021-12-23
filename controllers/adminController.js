@@ -188,20 +188,54 @@ exports.setProfilePic = async (req,res, next) => {
     if(req.file){
 
       // console.log(Object.keys(req.query).length)
-      
+      // try {
+      //   fs.unlinkSync(req.file.path)
+      //   //file removed
+      // } catch(err) {
+      //   console.error(err)
+      // }
+
       if(req.query.hasOwnProperty('username') && Object.keys(req.query).length == 1){
+        const result = await Staff.findOne({username: req.query.username},{image: 1, _id: 0})
+
+        try {
+          fs.unlinkSync(result.image)
+          //file removed
+        } catch(err) {
+          console.error(err)
+        }
+          console.log(result)
         await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: req.file.path}})
-
-      }else if(req.query.hasOwnProperty('clientId') && Object.keys(req.query).length == 1){
-        await Client.findOneAndUpdate({clientId: req.query.clientId},{$set: {image: req.file.path}})
-      }
-
+        const editedStaff = await Staff.findOne({username: req.query.username})
         
         return  res.json({success: true,
-        message: req.file.path,
-                   },
-        
-    );
+          message: editedStaff,
+                     },
+          
+      );
+      }else if(req.query.hasOwnProperty('clientId') && Object.keys(req.query).length == 1){
+        const result = await Client.findOne({clientId: req.query.clientId},{image: 1, _id: 0})
+
+      try {
+        fs.unlinkSync(result.image)
+        //file removed
+      } catch(err) {
+        console.error(err)
+      }
+        console.log(result)
+
+        await Client.findOneAndUpdate({clientId: req.query.clientId},{$set: {image: req.file.path}})
+        const editedClient = await Client.findOne({clientId: req.query.clientId})
+
+        return  res.json({success: true,
+          message: editedClient,
+                     },
+          
+      );
+
+      }
+     
+       
     }
     });
 
