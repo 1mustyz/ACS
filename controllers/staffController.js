@@ -5,6 +5,7 @@ const {uuid} = require('uuidv4')
 const multer = require('multer');
 const {singleUpload} = require('../middlewares/filesMiddleware');
 const msToTime = require('../middlewares/timeMiddleware')
+const fs = require('fs');
 
 // save action perform on client
 exports.saveClientAction = async (req,res,next) => {
@@ -71,24 +72,27 @@ exports.setProfilePic = async (req,res, next) => {
         return res.json({"image": req.file, "msg":'Please select an image to upload'});
       }
       if(req.file){
-          console.log(req.query.username)
-          const result = await Staff.findOne({username: req.query.username},{image: 1, _id: 0})
-
-        try {
-          fs.unlinkSync(result.image)
-          //file removed
-        } catch(err) {
-          console.error(err)
-        }
-          console.log(result)
+        if(req.query.hasOwnProperty('username') && Object.keys(req.query).length == 1){
+          const result = await Staff.findOne({username: req.query.username},{_id: 0,image: 1})
+  
+          try {
+            fs.unlinkSync(result.image)
+            //file removed
+          } catch(err) {
+            console.error(err)
+          }
+            console.log(result)
           await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: req.file.path}})
           const editedStaff = await Staff.findOne({username: req.query.username})
-
-          return  res.json({success: true,
-          message: editedStaff,
-                     },
           
-      );
+          res.json({success: true,
+            message: editedStaff,
+                       },
+            
+        );
+        }
+      }else{
+        return  res.json({success: true, err,  })
       }
       });          
     
