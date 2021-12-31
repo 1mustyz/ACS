@@ -9,8 +9,8 @@ exports.staffIdGenerator = async (req,res,next) => {
 
     let id;
     if (getStaff.length < 1) {
-        id = 'ACS/ADMIN/001'
-        req.body.username = 'ACS/ADMIN/001'
+        id = 'ACRS/ADMIN/001'
+        req.body.username = 'ACRS/ADMIN/001'
     } 
     else{
         // 3. if there are staffs get the last id and icrement by one
@@ -22,9 +22,9 @@ exports.staffIdGenerator = async (req,res,next) => {
         
         if(req.body.role == 'staff'){
 
-            req.body.username = `ACS/STAFF/${zeros = id[2] < 10  && parseInt(id[2]) + 1 < 10 ? '00': id[2] >= 99 ? '':'0'}${parseInt(id[2]) + 1 }`
+            req.body.username = `ACRS/STAFF/${zeros = id[2] < 10  && parseInt(id[2]) + 1 < 10 ? '00': id[2] >= 99 ? '':'0'}${parseInt(id[2]) + 1 }`
         }else if(req.body.role == 'admin'){
-            req.body.username = `ACS/ADMIN/${zeros = id[2] < 10  && parseInt(id[2]) + 1 < 10 ? '00': id[2] >= 99 ? '':'0'}${parseInt(id[2]) + 1 }`
+            req.body.username = `ACRS/ADMIN/${zeros = id[2] < 10  && parseInt(id[2]) + 1 < 10 ? '00': id[2] >= 99 ? '':'0'}${parseInt(id[2]) + 1 }`
 
         }else{
             res.json({"msg":"role not accepted"})
