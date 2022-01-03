@@ -6,7 +6,14 @@ const multer = require('multer');
 const {singleUpload} = require('../middlewares/filesMiddleware');
 const msToTime = require('../middlewares/timeMiddleware')
 const fs = require('fs');
+const cloudinary = require('cloudinary');
 
+// cloudinary configuration for saving files
+cloudinary.config({
+    cloud_name: 'mustyz',
+    api_key: '727865786596545',
+    api_secret: 'HpUmMxoW8BkmIRDWq_g2-5J2mD8'
+})
 // save action perform on client
 exports.saveClientAction = async (req,res,next) => {
     const {clientId,clientActions} = req.body
@@ -15,7 +22,7 @@ exports.saveClientAction = async (req,res,next) => {
 
     clientActions.createdAt = msToTime(new Date().getTime() + Math.abs((new Date().getTimezoneOffset() * 60000))) 
     clientActions.day = new Date().getDay()
-    clientActions.year = new Date().getDay().getFullYear()
+    clientActions.year = new Date().getFullYear()
 
     // console.log(clientActions.createdAt)
 
@@ -75,21 +82,36 @@ exports.setProfilePic = async (req,res, next) => {
         if(req.query.hasOwnProperty('username') && Object.keys(req.query).length == 1){
           const result = await Staff.findOne({username: req.query.username},{_id: 0,image: 1})
   
-          try {
-            fs.unlinkSync(result.image)
-            //file removed
-          } catch(err) {
-            console.error(err)
-          }
-            console.log(result)
-          await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: req.file.path}})
-          const editedStaff = await Staff.findOne({username: req.query.username})
+        //   try {
+        //     fs.unlinkSync(result.image)
+        //     //file removed
+        //   } catch(err) {
+        //     console.error(err)
+        //   }
+        //     console.log(result)
+        //   await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: req.file.path}})
+        //   const editedStaff = await Staff.findOne({username: req.query.username})
           
-          res.json({success: true,
-            message: editedStaff,
-                       },
+        //   res.json({success: true,
+        //     message: editedStaff,
+        //                },
             
-        );
+        // );
+
+        cloudinary.v2.uploader.upload(req.file.path, 
+          { resource_type: "raw" }, 
+      async function(error, result) {
+          console.log(result, error); 
+  
+          await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: result.url}})
+            const editedStaff = await Staff.findOne({username: req.query.username})
+            
+            res.json({success: true,
+              message: editedStaff,
+                         },
+          
+      );
+          });
         }
       }else{
         return  res.json({success: true, err,  })

@@ -11,6 +11,14 @@ const csv = require('csv-parser')
 const fs = require('fs')
 const msToTime = require('../middlewares/timeMiddleware')
 const mailler = require('../middlewares/mailjetMiddleware')
+const cloudinary = require('cloudinary');
+
+// cloudinary configuration for saving files
+cloudinary.config({
+    cloud_name: 'mustyz',
+    api_key: '727865786596545',
+    api_secret: 'HpUmMxoW8BkmIRDWq_g2-5J2mD8'
+})
 
 exports.mall = async (req,res,next) => {
   mailler("onemusty.z@gmail.com", "Yusuf", "onemusty.z@gmail.com", "Yusuf")
@@ -197,41 +205,76 @@ exports.setProfilePic = async (req,res, next) => {
 
       if(req.query.hasOwnProperty('username') && Object.keys(req.query).length == 1){
         const result = await Staff.findOne({username: req.query.username},{_id: 0,image: 1})
+        
+        const imageName = result.image.split('/').splice(6).join('/')
+        console.log(imageName)
 
-        try {
-          fs.unlinkSync(result.image)
-          //file removed
-        } catch(err) {
-          console.error(err)
-        }
-          console.log(result)
-        await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: req.file.path}})
+        // cloudinary.v2.uploader.destroy('musty-image', function(error,result) {
+        //   console.log(result, error) });       
+          // try {
+        //   fs.unlinkSync(result.image)
+        //   //file removed
+        // } catch(err) {
+        //   console.error(err)
+        // }
+        //   console.log(result)
+        // await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: req.file.path}})
+        // const editedStaff = await Staff.findOne({username: req.query.username})
+        
+        // res.json({success: true,
+        //   message: editedStaff,
+        //              },
+          
+      // );
+
+      cloudinary.v2.uploader.upload(req.file.path, 
+        { resource_type: "raw" }, 
+    async function(error, result) {
+        console.log(result, error); 
+
+        await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: result.url}})
         const editedStaff = await Staff.findOne({username: req.query.username})
         
         res.json({success: true,
           message: editedStaff,
                      },
-          
-      );
+        
+    );
+        });
       }else if(req.query.hasOwnProperty('clientId') && Object.keys(req.query).length == 1){
         const result = await Client.findOne({clientId: req.query.clientId},{_id: 0,image: 1,})
 
-      try {
-        fs.unlinkSync(result.image)
-        //file removed
-      } catch(err) {
-        console.error(err)
-      }
-        console.log(result)
+      // try {
+      //   fs.unlinkSync(result.image)
+      //   //file removed
+      // } catch(err) {
+      //   console.error(err)
+      // }
+      //   console.log(result)
 
-        await Client.findOneAndUpdate({clientId: req.query.clientId},{$set: {image: req.file.path}})
+      //   await Client.findOneAndUpdate({clientId: req.query.clientId},{$set: {image: req.file.path}})
+      //   const editedClient = await Client.findOne({clientId: req.query.clientId})
+
+      //   res.json({success: true,
+      //     message: editedClient,
+      //                },
+          
+      // );
+
+      cloudinary.v2.uploader.upload(req.file.path, 
+        { resource_type: "raw" }, 
+    async function(error, result) {
+        console.log(result, error); 
+
+           await Client.findOneAndUpdate({clientId: req.query.clientId},{$set: {image: result.url}})
         const editedClient = await Client.findOne({clientId: req.query.clientId})
 
         res.json({success: true,
           message: editedClient,
                      },
-          
-      );
+        
+    );
+        });
 
       }
      
