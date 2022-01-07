@@ -3,7 +3,7 @@ const storage = require('../config/multerConfig');
 
 const singleUpload = multer({
     storage: storage.storage,
-    limits: {fileSize: 1024 * 1024 }
+    limits: {fileSize: 2048 * 2048 }
   }).single('profile_pic');
 
 const singleFileUpload = multer({
