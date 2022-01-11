@@ -10,9 +10,11 @@ const jwt =require('jsonwebtoken');
 const csv = require('csv-parser')
 const fs = require('fs')
 const msToTime = require('../middlewares/timeMiddleware')
-const mailler = require('../middlewares/mailjetMiddleware')
+const math = require('../middlewares/math.middleware')
 const cloudinary = require('cloudinary');
-const { response } = require('express');
+const mailgun = require("mailgun-js");
+const DOMAIN = "sandbox09949278db4c4a108c6c1d3d1fefe2ff.mailgun.org";
+const mg = mailgun({apiKey: "9bd20544d943a291e8833abd9e0c9908-76f111c4-8a189b96", domain: DOMAIN});
 
 // cloudinary configuration for saving files
 cloudinary.config({
@@ -22,14 +24,16 @@ cloudinary.config({
 })
 
 exports.mall = async (req,res,next) => {
-  mailler("onemusty.z@gmail.com", "Yusuf", "onemusty.z@gmail.com", "Yusuf")
-  .then((result) => {
-    console.log(result.body)
-    res.json(result.body)
-  })
-  .catch((err) => {
-    console.log(err.statusCode)
-  })
+  const data = {
+    from: "onemusty.z@gmail.com",
+    to: "onemustyfc@gmail.com",
+    subject: "Hello",
+    text: "Testing some Mailgun awesomness!"
+  };
+  mg.messages().send(data, function (error, body) {
+    console.log(body);
+  });
+
 } 
 // staff registration controller
 exports.registerStaff = async (req, res, next) => {
@@ -54,7 +58,21 @@ exports.registerStaff = async (req, res, next) => {
           updatedAt: user.updatedAt,
           __v: user.__v
         }
-        res.json({ success: true, newUser })
+        const data = {
+          from: "ACRS@gmail.com",
+          to: "onemustyfc@gmail.com",
+          subject: "ACRS DEFAULT PASSWORD",
+          text: "Your default password is 'password'"
+        };
+        try {
+          
+          mg.messages().send(data, function (error, body) {
+            console.log(body);
+          });
+          res.json({ success: true, newUser })
+        } catch (error) {
+          res.json({ success: false, newUser })
+        }
       })
     } catch (error) {
       res.json({ success: false, error })
@@ -91,14 +109,24 @@ exports.registerStaff = async (req, res, next) => {
 
 exports.forgetPassword = async (req,res,next) => {
 
+  const newPassword = math.randomNumber()
   try {
 
       const user = await Staff.findOne({
         username: req.query.username
     });
-    await user.setPassword(req.body.password);
+    await user.setPassword(newPassword.toString());
     const updatedUser = await user.save();
-    res.json({success:true, message:"Password have been reset"})
+    const data = {
+      from: "ACRS@gmail.com",
+      to: "onemustyfc@gmail.com",
+      subject: "CHANGED PASSWORD",
+      text: `Your new password is ${newPassword}`
+    };
+    mg.messages().send(data, function (error, body) {
+      console.log(body);
+    });
+    res.json({success:true, message:"Password have been reset and sent to email"})
   } catch (error) {
     res.json({success:false, message:error})
   }

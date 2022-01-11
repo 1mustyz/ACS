@@ -27,7 +27,7 @@ router.post('/login', adminController.loginStaff)
 
 // get all staff
 router.get('/get-all-staff', adminController.findAllStaff)
-router.get('/mall', adminController.mall)
+router.post('/mail', adminController.mall)
 
 // get only staff
 router.get('/get-only-staff', adminController.getOnlyStaff)
