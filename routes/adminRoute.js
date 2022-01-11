@@ -91,6 +91,9 @@ router.put('/edit-client', adminController.editClient)
 // change password
 router.post('/change-password', adminController.changePassword)
 
+// forget password
+router.post('/forget-password', adminController.forgetPassword)
+
 
 
 /** All delete request *////////////////////////////////////////////////////

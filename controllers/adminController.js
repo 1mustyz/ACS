@@ -12,6 +12,7 @@ const fs = require('fs')
 const msToTime = require('../middlewares/timeMiddleware')
 const mailler = require('../middlewares/mailjetMiddleware')
 const cloudinary = require('cloudinary');
+const { response } = require('express');
 
 // cloudinary configuration for saving files
 cloudinary.config({
@@ -87,6 +88,22 @@ exports.registerStaff = async (req, res, next) => {
       }
     });
   }
+
+exports.forgetPassword = async (req,res,next) => {
+
+  try {
+
+      const user = await Staff.findOne({
+        username: req.query.username
+    });
+    await user.setPassword(req.body.password);
+    const updatedUser = await user.save();
+    res.json({success:true, message:"Password have been reset"})
+  } catch (error) {
+    res.json({success:false, message:error})
+  }
+    
+}
 
   // staff login controller
 exports.loginStaff = (req, res, next) => {
