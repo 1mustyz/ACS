@@ -49,7 +49,7 @@ router.get('/get-single-client', passport.authenticate("jwt.admin",{session:fals
 router.get('/get-all-actions',  adminController.findAllAction)
 
 // get single action
-router.get('/get-single-action', passport.authenticate("jwt.admin",{session:false}), adminController.singleAction)
+router.get('/get-single-action',  adminController.singleAction)
 
 // get all statistics
 router.get('/statistics', adminController.statistics)
