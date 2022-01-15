@@ -3,7 +3,7 @@ const path = require('path')
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-      cb(null, '');
+      cb(null, 'public/images');
   },
 
   // By default, multer removes file extensions so let's add them back

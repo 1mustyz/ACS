@@ -226,6 +226,14 @@ exports.singleStaff = async (req,res, next) => {
 
 // set profile pic
 exports.setProfilePic = async (req,res, next) => {
+
+  const dir = './public/images';
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, {
+        recursive: true
+      });
+    }
+
   singleUpload(req, res, async function(err) {
     if (err instanceof multer.MulterError) {
     return res.json(err.message);
@@ -249,6 +257,9 @@ exports.setProfilePic = async (req,res, next) => {
       if(req.query.hasOwnProperty('username') && Object.keys(req.query).length == 1){
         const result = await Staff.findOne({username: req.query.username},{_id: 0,image: 1})
         
+
+        
+
         const imageName = result.image.split('/').splice(7)
         console.log('-----------------',imageName)
 
@@ -281,6 +292,14 @@ exports.setProfilePic = async (req,res, next) => {
       }else if(req.query.hasOwnProperty('clientId') && Object.keys(req.query).length == 1){
         const result = await Client.findOne({clientId: req.query.clientId},{_id: 0,image: 1,})
 
+
+        try {
+          fs.unlinkSync(result.image)
+          //file removed
+        } catch(err) {
+          console.error(err)
+        }
+
         const imageName = result.image.split('/').splice(7)
         console.log('-----------------',imageName)
 
@@ -311,8 +330,14 @@ exports.setProfilePic = async (req,res, next) => {
      
        
     }
+        try {
+          fs.rmdirSync('./public/images', { recursive: true });
+        } catch(err) {
+          console.error(err)
+        }
     });
 
+    
         
   
 }
