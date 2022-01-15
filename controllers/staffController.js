@@ -80,28 +80,25 @@ exports.setProfilePic = async (req,res, next) => {
         if(req.query.hasOwnProperty('username') && Object.keys(req.query).length == 1){
           const result = await Staff.findOne({username: req.query.username},{_id: 0,image: 1})
   
-        //   try {
-        //     fs.unlinkSync(result.image)
-        //     //file removed
-        //   } catch(err) {
-        //     console.error(err)
-        //   }
-        //     console.log(result)
-        //   await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: req.file.path}})
-        //   const editedStaff = await Staff.findOne({username: req.query.username})
-          
-        //   res.json({success: true,
-        //     message: editedStaff,
-        //                },
-            
-        // );
+
+          const imageName = result.image.split('/').splice(7)
+          console.log('-----------------',imageName)
+  
+          cloudinary.v2.api.delete_resources_by_prefix(imageName[0], 
+          {
+            invalidate: true,
+            resource_type: "raw"
+        }, 
+          function(error,result) {
+            console.log(result, error) }); 
+
 
         cloudinary.v2.uploader.upload(req.file.path, 
           { resource_type: "raw" }, 
       async function(error, result) {
           console.log(result, error); 
   
-          await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: result.url}})
+          await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: result.secure_url}})
             const editedStaff = await Staff.findOne({username: req.query.username})
             
             res.json({success: true,

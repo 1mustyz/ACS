@@ -24,15 +24,13 @@ cloudinary.config({
 })
 
 exports.mall = async (req,res,next) => {
-  const data = {
-    from: "onemusty.z@gmail.com",
-    to: "onemustyfc@gmail.com",
-    subject: "Hello",
-    text: "Testing some Mailgun awesomness!"
-  };
-  mg.messages().send(data, function (error, body) {
-    console.log(body);
-  });
+  cloudinary.v2.api.delete_resources_by_prefix('bc7crytwzlexeg8ubxt3.jpg', 
+  {
+    invalidate: true,
+    resource_type: "raw"
+}, 
+  function(error,result) {
+    console.log(result, error) });   
 
 } 
 // staff registration controller
@@ -251,33 +249,27 @@ exports.setProfilePic = async (req,res, next) => {
       if(req.query.hasOwnProperty('username') && Object.keys(req.query).length == 1){
         const result = await Staff.findOne({username: req.query.username},{_id: 0,image: 1})
         
-        const imageName = result.image.split('/').splice(6).join('/')
-        console.log(imageName)
+        const imageName = result.image.split('/').splice(7)
+        console.log('-----------------',imageName)
 
-        // cloudinary.v2.uploader.destroy('musty-image', function(error,result) {
-        //   console.log(result, error) });       
-          // try {
-        //   fs.unlinkSync(result.image)
-        //   //file removed
-        // } catch(err) {
-        //   console.error(err)
-        // }
-        //   console.log(result)
-        // await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: req.file.path}})
-        // const editedStaff = await Staff.findOne({username: req.query.username})
-        
-        // res.json({success: true,
-        //   message: editedStaff,
-        //              },
+        cloudinary.v2.api.delete_resources_by_prefix(imageName[0], 
+        {
+          invalidate: true,
+          resource_type: "raw"
+      }, 
+        function(error,result) {
+          console.log(result, error) });   
+      
+           
           
-      // );
 
       cloudinary.v2.uploader.upload(req.file.path, 
         { resource_type: "raw" }, 
     async function(error, result) {
         console.log(result, error); 
 
-        await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: result.url}})
+        
+        await Staff.findOneAndUpdate({username: req.query.username},{$set: {image: result.secure_url}})
         const editedStaff = await Staff.findOne({username: req.query.username})
         
         res.json({success: true,
@@ -289,29 +281,23 @@ exports.setProfilePic = async (req,res, next) => {
       }else if(req.query.hasOwnProperty('clientId') && Object.keys(req.query).length == 1){
         const result = await Client.findOne({clientId: req.query.clientId},{_id: 0,image: 1,})
 
-      // try {
-      //   fs.unlinkSync(result.image)
-      //   //file removed
-      // } catch(err) {
-      //   console.error(err)
-      // }
-      //   console.log(result)
+        const imageName = result.image.split('/').splice(7)
+        console.log('-----------------',imageName)
 
-      //   await Client.findOneAndUpdate({clientId: req.query.clientId},{$set: {image: req.file.path}})
-      //   const editedClient = await Client.findOne({clientId: req.query.clientId})
-
-      //   res.json({success: true,
-      //     message: editedClient,
-      //                },
-          
-      // );
+        cloudinary.v2.api.delete_resources_by_prefix(imageName[0], 
+        {
+          invalidate: true,
+          resource_type: "raw"
+      }, 
+        function(error,result) {
+          console.log(result, error) }); 
 
       cloudinary.v2.uploader.upload(req.file.path, 
         { resource_type: "raw" }, 
     async function(error, result) {
         console.log(result, error); 
 
-           await Client.findOneAndUpdate({clientId: req.query.clientId},{$set: {image: result.url}})
+           await Client.findOneAndUpdate({clientId: req.query.clientId},{$set: {image: result.secure_url}})
         const editedClient = await Client.findOne({clientId: req.query.clientId})
 
         res.json({success: true,
