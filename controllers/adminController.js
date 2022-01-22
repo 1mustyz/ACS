@@ -11,6 +11,7 @@ const csv = require('csv-parser')
 const fs = require('fs')
 const msToTime = require('../middlewares/timeMiddleware')
 const math = require('../middlewares/math.middleware')
+const randomstring = require("randomstring");
 const cloudinary = require('cloudinary');
 const mailgun = require("mailgun-js");
 const DOMAIN = "sandbox09949278db4c4a108c6c1d3d1fefe2ff.mailgun.org";
@@ -361,7 +362,7 @@ exports.editStaff = async (req,res,next) => {
 
 // register client
 exports.registerClient = async (req,res,next) => {
-  req.body.clientId = uuid()
+  req.body.clientId = randomstring(8)
   const client = await Client.collection.insertOne(req.body)
   res.json({success: true, message: 'client created successfullty', client});
 }
@@ -398,7 +399,7 @@ exports.registerClientFromAfile = async (req,res,next) => {
         .on('end', async () => {
           // console.log(clients)
           clients.map(client => {
-            client.clientId = uuid()
+            client.clientId = randomstring()
           })
           console.log(clients)
           const clientes = await Client.insertMany(clients)
