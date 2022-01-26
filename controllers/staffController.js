@@ -24,7 +24,9 @@ exports.saveClientAction = async (req,res,next) => {
 
     // console.log(clientActions.createdAt)
 
-    const client = await Client.findOneAndUpdate({clientId},{$push:{"clientActions": clientActions}})
+    const client = await Client.findOneAndUpdate({clientId},{$push:{"clientActions": clientActions}},{new:true})
+    if(client == null) res.json({success: false, message: "not a valid client"});
+
     await ClientAlert.findOneAndUpdate({clientId},{$set:{"alertActive": false}})
     console.log(clientActions)
     res.json({success: true, message: "client action saved successfully", client});
@@ -157,7 +159,7 @@ exports.setProfilePic = async (req,res, next) => {
     });
 
     console.log(staffActionsClient)
-    res.json({success: true, message: staffActionsClient})
+    res.json({success: true, message: staffActionsClient.reverse()})
     
   }
 

@@ -362,7 +362,7 @@ exports.editStaff = async (req,res,next) => {
 
 // register client
 exports.registerClient = async (req,res,next) => {
-  req.body.clientId = randomstring(8)
+  req.body.clientId = randomstring.generate(8)
   const client = await Client.collection.insertOne(req.body)
   res.json({success: true, message: 'client created successfullty', client});
 }
@@ -399,7 +399,7 @@ exports.registerClientFromAfile = async (req,res,next) => {
         .on('end', async () => {
           // console.log(clients)
           clients.map(client => {
-            client.clientId = randomstring()
+            client.clientId = randomstring.generate(8)
           })
           console.log(clients)
           const clientes = await Client.insertMany(clients)
