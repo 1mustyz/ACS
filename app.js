@@ -165,11 +165,11 @@ app.post('/voke-a-chart', async (req,res,next) =>{
 
         console.log('///////',vokedOne,vokedTwo)
 
-        let user;
-        if(vokedTwo){
+        let user = [];
+        if(vokedTwo.length > 0){
 
           user = [...vokedTwo]
-        }else if(vokedOne){
+        }else if(vokedOne.length > 0){
           user = [...vokedOne]
 
         }
